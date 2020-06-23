@@ -1,0 +1,19 @@
+#! /usr/bin/php
+<?php 
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use SamsungTV\Remote;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$oLogger = new Logger("remote");
+$oLogger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+
+$sKey = strtoupper($_SERVER['argv'][1]);
+
+$aConfig = parse_ini_file(__DIR__ . '/../remote.ini');
+
+$oRemote = new Remote($oLogger);
+$oRemote->setHost($aConfig['targetip'])->sendKey($sKey);
+
