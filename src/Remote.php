@@ -2,11 +2,13 @@
 
 namespace SamsungTV;
 
+use Ratchet\RFC6455\Messaging\MessageInterface;
 use React\EventLoop\Factory as ReactFactory;
 use React\EventLoop\LoopInterface;
 use Ratchet\Client\Connector;
 use Psr\Log\LoggerInterface;
 use Ratchet\Client\WebSocket;
+use UnexpectedValueException;
 
 /**
  * Remote control class for Samsung 2016+ TVs using the websocket interface
@@ -15,40 +17,46 @@ use Ratchet\Client\WebSocket;
 class Remote
 {
 	/**
-	 * @var LoggerInterface
 	 * Logger for debugging
+     *
+     * @var LoggerInterface
 	 */
 	private $logger;
 
 	/**
-	 * @var string
 	 * Host to connect to
+     *
+     * @var string
 	 */
 	private $sHost;
 
 	/**
-	 * @var integer
 	 * Port to connect to
+     *
+     * @var integer
 	 */
-	private $iPort = 8002;
+    private $iPort = 8002;
 
 	/**
+     * Application name
+     *
 	 * @var string
-	 * Application name
 	 */
 	private $sAppName = 'PHP Remote';
 
 	/**
+     * Queue of keypresses
+     *
 	 * @var array
-	 * Queue of keypresses
 	 */
-	private $aQueue;
+	private $aQueue = [];
 
     /**
-     * @var string
      * Application authentication token
+     *
+     * @var string
      */
-	private $token = '';
+	private $sToken = '';
 
     const TOKEN_FILE_DIR = __DIR__ . '/../var/cache';
 
@@ -81,9 +89,9 @@ class Remote
 	);
 
 	/**
-	 * Constructor takes a logger for debugging
+	 * Remote constructor.
      *
-	 * @param LoggerInterface $logger Logger (eg. monolog)
+	 * @param LoggerInterface $logger
 	 */
 	public function __construct(LoggerInterface $logger)
 	{
@@ -93,27 +101,28 @@ class Remote
 	}
 
 	/**
-	 * Set the host to connect to 
-	 * Should probably be an IP as the libraries use global DNS rather than your local resolver
+	 * Set the host to connect to .
+	 * Should probably be an IP as the libraries use global DNS rather than your local resolver.
      *
-	 * @param string $sHost Hostname or IP address
+	 * @param string $sHost
      *
-	 * @return Remote Return $this to allow for fluid interface
+	 * @return Remote
 	 */
-	public function setHost($sHost)
+	public function setHost($sHost): Remote
 	{
 		$this->sHost = $sHost;
+
 		return $this;
 	}
 
 	/**
-	 * Set the port to connect to (defaults to 8002)
+	 * Set the port to connect to (defaults to 8002).
      *
-	 * @param integer $iPort Port to use
+	 * @param int $iPort
      *
-	 * @return Remote Return $this to allow fluid interface
+	 * @return Remote
 	 */
-	public function setPort($iPort)
+	public function setPort($iPort): Remote
 	{
 		$this->iPort = $iPort;
 
@@ -121,14 +130,14 @@ class Remote
 	}
 
 	/**
-	 * Set the application name to identify this App to the TV as
+	 * Set the application name to identify this App to the TV as.
 	 * (You may need to authorised this application through the TV interface)
      *
 	 * @param string $sAppName
      *
-	 * @return Remote Return $this to allow fluid interface
+	 * @return Remote
 	 */
-	public function setAppName($sAppName)
+	public function setAppName($sAppName): Remote
 	{
 		$this->sAppName = $sAppName;
 
@@ -136,13 +145,13 @@ class Remote
 	}
 
 	/**
-	 * Validate a key against the list of valid keys
+	 * Validate a key against the list of valid keys.
      *
 	 * @param string $sKey
      *
-	 * @return boolean True if valid else false
+	 * @return bool
 	 */
-	private function validateKey($sKey)
+	private function validateKey($sKey): bool
     {
         if (substr($sKey, 0, 4) == 'KEY_') {
             $sKey = substr($sKey, 4);
@@ -152,9 +161,13 @@ class Remote
 	}
 
 	/**
-	 * Create the JSON message to send in the websocket request
+	 * Create the JSON message to send in the websocket request.
+     *
+     * @param $sKey
+     *
+     * @return string
 	 */
-	private function getKeypressMessage($sKey)
+	private function getKeypressMessage($sKey): string
 	{
 		$aMessage = array(
 			'method' => 'ms.remote.control',
@@ -167,19 +180,18 @@ class Remote
 		);
 
 		return json_encode($aMessage,JSON_PRETTY_PRINT);
-
 	}
 
 	/**
-	 * Add a keypress to the queue
+	 * Add a keypress to the queue.
      *
-	 * @param string $sKey Key to add
-	 * @param float $fDelay Delay after keypress before next key
+	 * @param string $sKey
+	 * @param float $fDelay
 	 */
-	public function queueKey($sKey,$fDelay = 1.0)
+	public function queueKey($sKey,$fDelay = 1.0): void
     {
         if (!$this->validateKey($sKey)) {
-            throw new \UnexpectedValueException("Invalid key: {$sKey}");
+            throw new UnexpectedValueException("Invalid key: {$sKey}");
         }
 
 		$this->aQueue[] = array(
@@ -189,20 +201,20 @@ class Remote
 	}
 
 	/**
-	 * Clear any outstanding items in the key queue
+	 * Clear any outstanding items in the key queue.
 	 */
-	public function clearQueue()
+	public function clearQueue(): void
 	{
 		$this->aQueue = array();
 	}
 
 	/**
-	 * Wrapper function to send an individual key to the TV (clears the queue first)
+	 * Wrapper function to send an individual key to the TV (clears the queue first).
      *
-	 * @param string $sKey Key to send
-	 * @param float $fDelay Delay after keypress
+	 * @param string $sKey
+	 * @param float $fDelay
 	 */
-	public function sendKey($sKey, $fDelay = 1.0)
+	public function sendKey($sKey, $fDelay = 1.0): void
 	{
 		$this->clearQueue();
 		$this->queueKey($sKey,$fDelay);
@@ -210,12 +222,12 @@ class Remote
 	}
 
 	/**
-	 * Pop the top key and send it, then schedule the next keypress
+	 * Pop the top key and send it, then schedule the next keypress.
      *
 	 * @param WebSocket $conn
 	 * @param LoopInterface $loop
 	 */
-	private function sendQueueKeys(WebSocket $conn, LoopInterface $loop)
+	private function sendQueueKeys(WebSocket $conn, LoopInterface $loop): void
 	{
 		$aKeyDef = array_pop($this->aQueue);
 		if (!is_null($aKeyDef)) {
@@ -235,9 +247,9 @@ class Remote
 	}
 
 	/**
-	 * Send queued keypresses to TV
+	 * Send queued keypresses to TV.
 	 */
-	public function sendQueue()
+	public function sendQueue(): void
 	{
 		if (count($this->aQueue) == 0) {
 			$this->logger->warn('No keys to send');
@@ -245,8 +257,8 @@ class Remote
 		}
 
 		$tokenStr = '';
-		if (strlen($this->token) > 0) {
-		    $tokenStr = "&token={$this->token}";
+		if (strlen($this->sToken) > 0) {
+		    $tokenStr = "&token={$this->sToken}";
         }
 
 		$sAppName = utf8_encode(base64_encode($this->sAppName));
@@ -263,7 +275,7 @@ class Remote
 		$subProtocols = [];
 		$headers = [];
 		$connector($sURL, $subProtocols, $headers)->then(function(WebSocket $conn) use ($loop) {
-			$conn->on('message', function(\Ratchet\RFC6455\Messaging\MessageInterface $msg) use ($conn, $loop) {
+			$conn->on('message', function(MessageInterface $msg) use ($conn, $loop) {
 				$oMsg = json_decode($msg);
 				if ($oMsg->event == 'ms.channel.connect') {
                     if (property_exists($oMsg->data, 'token')) {
@@ -290,26 +302,28 @@ class Remote
     /**
      * Load the authentication token from the disk.
      */
-	private function loadToken()
+	private function loadToken(): void
     {
         if (!file_exists(self::TOKEN_FILE_DIR . '/' . self::TOKEN_FILE_NAME)) {
             return;
         }
 
-        $this->token = file_get_contents(self::TOKEN_FILE_DIR . '/' . self::TOKEN_FILE_NAME);
+        $this->sToken = file_get_contents(self::TOKEN_FILE_DIR . '/' . self::TOKEN_FILE_NAME);
     }
 
     /**
      * Saves the authentication token to the disk,
      *
-     * @param string $token
+     * @param string $sToken
      */
-    private function saveToken(string $token)
+    private function saveToken(string $sToken): void
     {
         if (!file_exists(self::TOKEN_FILE_DIR)) {
             mkdir(self::TOKEN_FILE_DIR, 755, true);
         }
 
-        file_put_contents(self::TOKEN_FILE_DIR . '/' . self::TOKEN_FILE_NAME, $token);
+        file_put_contents(self::TOKEN_FILE_DIR . '/' . self::TOKEN_FILE_NAME, $sToken);
+
+        $this->sToken = $sToken;
     }
 }

@@ -15,7 +15,7 @@ use Monolog\Handler\StreamHandler;
 $oLogger = new Logger('remote');
 $oLogger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
 
-$sKey = 'KEY_PAUSE';
+$sKey = 'KEY_HOME';
 
 $oRemote = new Remote($oLogger);
 $oRemote->setHost('192.168.2.1'); // 192.168.10.36
