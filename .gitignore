@@ -7,4 +7,4 @@
 /vendor/
 
 # Files
-/remote.ini
+/.env

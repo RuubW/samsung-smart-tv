@@ -10,10 +10,9 @@ use Monolog\Handler\StreamHandler;
 $oLogger = new Logger("remote");
 $oLogger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
 
+$sIP = getenv('TV_IP');
 $sKey = strtoupper($_SERVER['argv'][1]);
 
-$aConfig = parse_ini_file(__DIR__ . '/../remote.ini');
-
 $oRemote = new Remote($oLogger);
-$oRemote->setHost($aConfig['targetip'])->sendKey($sKey);
+$oRemote->setHost($sIP)->sendKey($sKey);
 

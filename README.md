@@ -8,11 +8,12 @@ Tested on a 2019 Q-series TV.
 
 ## Installation
 
-TODO: Composer install
+1. Run `composer install`
+2. Set up the `.env` file by copying `.env.dist` and setting the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu of your TV,
 
 ## Usage
 
-TODO: web client
+1. Visit the web client at `http://localhost:8080`
 
 ## Quirks
 
