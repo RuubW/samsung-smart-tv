@@ -10,18 +10,15 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use SamsungTV\Remote;
 use Monolog\Logger;
-use Monolog\Handler\ErrorLogHandler;
-use Symfony\Component\Yaml\Yaml;
+use Monolog\Handler\StreamHandler;
 
+$oLogger = new Logger('remote');
+$oLogger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
 
-$oLogger = new Logger("remote");
-$oLogger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM,logger::INFO));
-//$oLogger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
-
-$sKey = 'KEY_HOME';
+$sKey = 'KEY_PAUSE';
 
 $oRemote = new Remote($oLogger);
-$oRemote->setHost("192.168.2.1"); // 192.168.10.36
+$oRemote->setHost('192.168.2.1'); // 192.168.10.36
 $oRemote->sendKey($sKey);
 
 echo "Sent the {$sKey} request.";
