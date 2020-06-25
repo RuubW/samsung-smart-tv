@@ -1,0 +1,12 @@
+{
+    "require": {
+        "ext-json": "^7.4",
+        "monolog/monolog": "^1.22",
+        "psr/log": "^1.0",
+		"ratchet/pawl": "^0.2.3"
+    },
+	"autoload": {
+		"psr-4": {"SamsungTV\\": "src/"}
+	}
+
+}
