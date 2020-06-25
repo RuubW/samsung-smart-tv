@@ -1,6 +1,6 @@
 <?php
 
-namespace SamsungTV;
+namespace App;
 
 class RemoteException extends \RuntimeException
 {

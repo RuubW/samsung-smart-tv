@@ -1,6 +1,6 @@
 <?php
 
-namespace SamsungTV;
+namespace App;
 
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use React\EventLoop\Factory as ReactFactory;

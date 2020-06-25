@@ -3,7 +3,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use SamsungTV\Remote;
+use App\Remote;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
