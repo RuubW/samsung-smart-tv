@@ -6,15 +6,33 @@ use App\Library\Remote;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class DefaultController.
+ *
+ * @package App\Controller
+ */
 class DefaultController extends AbstractController
 {
+    /**
+     * @var Remote
+     */
     private $remote;
 
+    /**
+     * DefaultController constructor.
+     *
+     * @param Remote $remote
+     */
     public function __construct(Remote $remote)
     {
         $this->remote = $remote;
     }
 
+    /**
+     * Index action.
+     *
+     * @return Response
+     */
     public function index(): Response
     {
         $key = isset($_GET['key']) ? 'KEY_' . strtoupper($_GET['key']) : 'KEY_HOME';

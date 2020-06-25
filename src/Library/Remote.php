@@ -13,8 +13,10 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 use UnexpectedValueException;
 
 /**
- * Remote control class for Samsung 2016+ TVs using the websocket interface
+ * Class Remote.
  * Based on https://github.com/benreidnet/samsungtv
+ *
+ * @package App\Library
  */
 class Remote
 {
