@@ -1,30 +1,30 @@
 <?php
 
-/**
- * Simple REST to websocket bridge to present the remote control interface as
- * service that can be called via POST from other home automation systems
- * without them needing to be websocket aware
- */
+use App\Kernel;
+use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\ErrorHandler\Debug;
+use Symfony\Component\HttpFoundation\Request;
 
-require __DIR__ . '/../vendor/autoload.php';
+require dirname(__DIR__).'/vendor/autoload.php';
 
-use SamsungTV\Remote;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+(new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
 
-$oLogger = new Logger('remote');
-$oLogger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+if ($_SERVER['APP_DEBUG']) {
+    umask(0000);
 
-$sIP = getenv('TV_IP');
-$sKey = isset($_GET['key']) ? 'KEY_' . strtoupper($_GET['key']) : 'KEY_HOME';
-
-$oRemote = new Remote($oLogger);
-$oRemote->setHost($sIP);
-
-try {
-    $oRemote->sendKey($sKey);
-
-    echo "Sent the {$sKey} request.";
-} catch (Exception $e) {
-    echo "Error: {$e->getMessage()}";
+    Debug::enable();
 }
+
+if ($trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? false) {
+    Request::setTrustedProxies(explode(',', $trustedProxies), Request::HEADER_X_FORWARDED_ALL ^ Request::HEADER_X_FORWARDED_HOST);
+}
+
+if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
+    Request::setTrustedHosts([$trustedHosts]);
+}
+
+$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+$request = Request::createFromGlobals();
+$response = $kernel->handle($request);
+$response->send();
+$kernel->terminate($request, $response);
