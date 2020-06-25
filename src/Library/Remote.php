@@ -1,71 +1,67 @@
 <?php
 
-namespace SamsungTV;
+namespace App\Library;
 
+use App\Exception\RemoteException;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use React\EventLoop\Factory as ReactFactory;
 use React\EventLoop\LoopInterface;
 use Ratchet\Client\Connector;
 use Psr\Log\LoggerInterface;
 use Ratchet\Client\WebSocket;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use UnexpectedValueException;
 
 /**
- * Remote control class for Samsung 2016+ TVs using the websocket interface
+ * Class Remote.
  * Based on https://github.com/benreidnet/samsungtv
+ *
+ * @package App\Library
  */
 class Remote
 {
+    /**
+     * @var AdapterInterface
+     */
+    private $cache;
+
 	/**
-	 * Logger for debugging
-     *
      * @var LoggerInterface
 	 */
 	private $logger;
 
 	/**
-	 * Host to connect to
-     *
      * @var string
 	 */
-	private $sHost;
-
-	/**
-	 * Port to connect to
-     *
-     * @var integer
-	 */
-    private $iPort = 8002;
-
-	/**
-     * Application name
-     *
-	 * @var string
-	 */
-	private $sAppName = 'PHP Remote';
-
-	/**
-     * Queue of keypresses
-     *
-	 * @var array
-	 */
-	private $aQueue = [];
+	private $host;
 
     /**
-     * Application authentication token
-     *
      * @var string
+     *
+     * wss for secure, ws for insecure
      */
-	private $sToken = '';
+	private $protocol = 'wss';
 
-    const TOKEN_FILE_DIR = __DIR__ . '/../var/cache';
+	/**
+     * @var integer
+     *
+     * 8002 for secure, 8001 for insecure
+	 */
+    private $port = 8002;
 
-    const TOKEN_FILE_NAME = 'token';
-
+	/**
+	 * @var string
+	 */
+	private $appName = 'PHP Remote';
 
 	/**
 	 * @var array
-	 * Array of valid keys that can be sent. 
+	 */
+	private $queue = [];
+
+	/**
+	 * @var array
+     *
 	 * This list is taken from https://github.com/Bntdumas/SamsungIPRemote/blob/master/samsungKeyCodes.txt
 	 */
 	private $aValidKeys = array(
@@ -91,57 +87,25 @@ class Remote
 	/**
 	 * Remote constructor.
      *
+     * @param string $host
+     * @param AdapterInterface $cache
 	 * @param LoggerInterface $logger
 	 */
-	public function __construct(LoggerInterface $logger)
+	public function __construct($host, AdapterInterface $cache, LoggerInterface $logger)
 	{
+        $this->host = $host;
+	    $this->cache = $cache;
 		$this->logger = $logger;
-
-		$this->loadToken();
 	}
 
 	/**
-	 * Set the host to connect to .
-	 * Should probably be an IP as the libraries use global DNS rather than your local resolver.
+	 * Get the remote host
      *
-	 * @param string $sHost
-     *
-	 * @return Remote
+	 * @return string
 	 */
-	public function setHost($sHost): Remote
+	public function getHost(): string
 	{
-		$this->sHost = $sHost;
-
-		return $this;
-	}
-
-	/**
-	 * Set the port to connect to (defaults to 8002).
-     *
-	 * @param int $iPort
-     *
-	 * @return Remote
-	 */
-	public function setPort($iPort): Remote
-	{
-		$this->iPort = $iPort;
-
-		return $this;
-	}
-
-	/**
-	 * Set the application name to identify this App to the TV as.
-	 * (You may need to authorised this application through the TV interface)
-     *
-	 * @param string $sAppName
-     *
-	 * @return Remote
-	 */
-	public function setAppName($sAppName): Remote
-	{
-		$this->sAppName = $sAppName;
-
-		return $this;
+		return $this->host;
 	}
 
 	/**
@@ -194,7 +158,7 @@ class Remote
             throw new UnexpectedValueException("Invalid key: {$sKey}");
         }
 
-		$this->aQueue[] = array(
+		$this->queue[] = array(
 		    'key' => $sKey,
             'delay' => $fDelay
         );
@@ -205,7 +169,7 @@ class Remote
 	 */
 	public function clearQueue(): void
 	{
-		$this->aQueue = array();
+		$this->queue = array();
 	}
 
 	/**
@@ -229,7 +193,7 @@ class Remote
 	 */
 	private function sendQueueKeys(WebSocket $conn, LoopInterface $loop): void
 	{
-		$aKeyDef = array_pop($this->aQueue);
+		$aKeyDef = array_pop($this->queue);
 		if (!is_null($aKeyDef)) {
 			$sKey = $aKeyDef['key'];
 			$jsonMessage = $this->getKeypressMessage($sKey);
@@ -251,21 +215,27 @@ class Remote
 	 */
 	public function sendQueue(): void
 	{
-		if (count($this->aQueue) == 0) {
+		if (count($this->queue) == 0) {
 			$this->logger->warn('No keys to send');
 			return;
 		}
 
-		$tokenStr = '';
-		if (strlen($this->sToken) > 0) {
-		    $tokenStr = "&token={$this->sToken}";
+		$cacheItem = $this->cache->getItem('remote_token');
+        $tokenQuery = '';
+		if ($cacheItem->isHit()) {
+            $tokenQuery = "&token={$cacheItem->get()}";
         }
 
-		$sAppName = utf8_encode(base64_encode($this->sAppName));
-		// ws and port 8001 for non-secure, wss and port 8002 for secure
-		$sURL = "wss://{$this->sHost}:{$this->iPort}/api/v2/channels/samsung.remote.control?name={$sAppName}{$tokenStr}";
+		$remoteUrl = sprintf(
+		    '%s://%s:%d/api/v2/channels/samsung.remote.control?name=%s%s',
+            $this->protocol,
+            $this->host,
+            $this->port,
+            utf8_encode(base64_encode($this->appName)),
+            $tokenQuery
+        );
 
-		$this->logger->debug("Connecting to {$sURL}");
+		$this->logger->debug("Connecting to {$remoteUrl}");
 
 		$loop = ReactFactory::create();
 		$connector = new Connector($loop, null, [
@@ -274,12 +244,13 @@ class Remote
         ]);
 		$subProtocols = [];
 		$headers = [];
-		$connector($sURL, $subProtocols, $headers)->then(function(WebSocket $conn) use ($loop) {
-			$conn->on('message', function(MessageInterface $msg) use ($conn, $loop) {
+		$connector($remoteUrl, $subProtocols, $headers)->then(function(WebSocket $conn) use ($loop, $cacheItem) {
+			$conn->on('message', function(MessageInterface $msg) use ($conn, $loop, $cacheItem) {
 				$oMsg = json_decode($msg);
 				if ($oMsg->event == 'ms.channel.connect') {
                     if (property_exists($oMsg->data, 'token')) {
-                        $this->saveToken($oMsg->data->token);
+                        $cacheItem->set($oMsg->data->token);
+                        $this->cache->save($cacheItem);
                     }
 
 					$this->logger->debug('Connected');
@@ -298,32 +269,4 @@ class Remote
 
 		$loop->run();
 	}
-
-    /**
-     * Load the authentication token from the disk.
-     */
-	private function loadToken(): void
-    {
-        if (!file_exists(self::TOKEN_FILE_DIR . '/' . self::TOKEN_FILE_NAME)) {
-            return;
-        }
-
-        $this->sToken = file_get_contents(self::TOKEN_FILE_DIR . '/' . self::TOKEN_FILE_NAME);
-    }
-
-    /**
-     * Saves the authentication token to the disk,
-     *
-     * @param string $sToken
-     */
-    private function saveToken(string $sToken): void
-    {
-        if (!file_exists(self::TOKEN_FILE_DIR)) {
-            mkdir(self::TOKEN_FILE_DIR, 755, true);
-        }
-
-        file_put_contents(self::TOKEN_FILE_DIR . '/' . self::TOKEN_FILE_NAME, $sToken);
-
-        $this->sToken = $sToken;
-    }
 }
