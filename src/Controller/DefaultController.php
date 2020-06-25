@@ -5,9 +5,10 @@ namespace App\Controller;
 use App\Remote;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
-class DefaultController
+class DefaultController extends AbstractController
 {
     public function index(): Response
     {
@@ -20,16 +21,16 @@ class DefaultController
         $oRemote = new Remote($oLogger);
         $oRemote->setHost($sIP);
 
+        $error = false;
         try {
             $oRemote->sendKey($sKey);
-
-            $response = "Sent the {$sKey} request.";
         } catch (\Exception $e) {
-            $response = "Error: {$e->getMessage()}";
+            $error = $e->getMessage();
         }
 
-        return new Response(
-            $response
-        );
+        return $this->render('remote/index.html.twig', [
+            'key' => $sKey,
+            'error' => $error
+        ]);
     }
 }
