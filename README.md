@@ -13,7 +13,15 @@ Tested on a 2019 Q-series TV.
 
 ## Usage
 
-1. Visit the web client at `http://localhost:8080`
+### Web client
+
+Visit the client at `http://localhost:8080`
+
+### CLI
+
+Run the following command with a valid key as the first argument:
+
+`./bin/phpremote KEY_HOME`
 
 ## Quirks
 
