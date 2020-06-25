@@ -25,3 +25,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Controller\DefaultController:
+        arguments:
+            - '@App\Library\Remote'
+
+    App\Library\Remote:
+        arguments:
+            - '%env(TV_IP)%'
+            - '@cache.app'
+            - '@App\RemoteLogger'
+
+    App\RemoteLogger:
+        class: Monolog\Logger
+        arguments:
+            - 'remote'

@@ -2,28 +2,26 @@
 
 namespace App\Controller;
 
-use App\Remote;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
+use App\Library\Remote;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends AbstractController
 {
+    private $remote;
+
+    public function __construct(Remote $remote)
+    {
+        $this->remote = $remote;
+    }
+
     public function index(): Response
     {
-        $oLogger = new Logger('remote');
-        $oLogger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
-
-        $sIP = getenv('TV_IP');
-        $sKey = isset($_GET['key']) ? 'KEY_' . strtoupper($_GET['key']) : 'KEY_HOME';
-
-        $oRemote = new Remote($oLogger);
-        $oRemote->setHost($sIP);
+        $key = isset($_GET['key']) ? 'KEY_' . strtoupper($_GET['key']) : 'KEY_HOME';
 
         $error = false;
         try {
-            $oRemote->sendKey($sKey);
+            $this->remote->sendKey($key);
         } catch (\Exception $e) {
             $error = $e->getMessage();
         }
