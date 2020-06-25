@@ -27,7 +27,7 @@ class DefaultController extends AbstractController
         }
 
         return $this->render('remote/index.html.twig', [
-            'key' => $sKey,
+            'key' => $key,
             'error' => $error
         ]);
     }
