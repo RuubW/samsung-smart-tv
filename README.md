@@ -14,11 +14,13 @@ Tested on a 2019 Q-series TV.
 
 ## Installation
 
-1. Set up a `.env.local` file in the project root and add the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu on your TV;
-2. Run `docker-compose build` to build the environment;
-3. Run `docker-compose up -d` to start the environment;
-4. Run `docker-compose exec php-fpm bash` to bash into the PHP container;
-5. Run `composer install`.
+1. Clone this repository;
+2. Set up a `.env.local` file in the project root and add the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu on your TV;
+3. Run `docker-compose build` to build the environment;
+4. Run `docker-compose up -d` to start the environment;
+5. Run `docker-compose exec php-fpm bash` to bash into the PHP container;
+6. Run `composer install`.
+7. Run `yarn encore dev` to build the assets.
 
 ## Usage
 

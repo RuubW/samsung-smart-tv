@@ -1,9 +1,13 @@
 {% extends 'base.html.twig' %}
 
+
 {% block body %}
-    {% if error %}
-        Error: {{ error }}
-    {% else %}
-        Sent the {{ key }} request.
-    {% endif %}
+    <h1 class="h3 mb-3">Samsung Smart TV remote</h1>
+    <div class="">
+        {% if error %}
+            Error: <span class="text-danger">{{ error }}<span>
+        {% else %}
+                Sent the <span class="text-primary">{{ key }}</span> request.
+        {% endif %}
+    </div>
 {% endblock %}
