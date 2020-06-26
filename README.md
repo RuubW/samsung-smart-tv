@@ -19,8 +19,8 @@ Tested on a 2019 Q-series TV.
 3. Run `docker-compose build` to build the environment;
 4. Run `docker-compose up -d` to start the environment;
 5. Run `docker-compose exec php-fpm bash` to bash into the PHP container;
-6. Run `composer install`.
-7. Run `yarn encore dev` to build the assets.
+6. Run `composer install`;
+7. Run `yarn install` followed by `yarn encore dev` to build the assets.
 
 ## Usage
 
