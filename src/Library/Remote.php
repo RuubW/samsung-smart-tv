@@ -37,22 +37,18 @@ class Remote
 
     /**
      * @var string
-     *
-     * wss for secure, ws for insecure
      */
-	private $protocol = 'wss';
+	private $protocol;
 
 	/**
      * @var integer
-     *
-     * 8002 for secure, 8001 for insecure
 	 */
-    private $port = 8002;
+    private $port;
 
 	/**
 	 * @var string
 	 */
-	private $appName = 'PHP Remote';
+	private $appName;
 
     /**
      * @var array
@@ -70,17 +66,26 @@ class Remote
      * @param AdapterInterface $cache
      * @param LoggerInterface $logger
      * @param string $host
+     * @param string $protocol
+     * @param int $port
+     * @param string $appName
      * @param array $validKeys
 	 */
 	public function __construct(
         AdapterInterface $cache,
         LoggerInterface $logger,
 	    string $host,
+        string $protocol,
+        int $port,
+        string $appName,
         array $validKeys
     ) {
         $this->cache = $cache;
         $this->logger = $logger;
         $this->host = $host;
+        $this->protocol = $protocol;
+        $this->port = $port;
+        $this->appName = $appName;
         $this->validKeys = $validKeys;
 	}
 

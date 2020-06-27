@@ -23,7 +23,10 @@ services:
             - '@cache.app'
             - '@App\Library\RemoteLogger'
             - '%env(TV_IP)%'
-            - '%app.remote.keys%'
+            - '%app.remote.protocol.secure%'
+            - '%app.remote.port.secure%'
+            - '%app.remote.name%'
+            - '%app.remote.valid_keys%'
 
     App\Library\RemoteLogger:
         class: Monolog\Logger
