@@ -101,7 +101,7 @@ class Remote
      *
 	 * @return bool
 	 */
-	private function validateKey($key): bool
+	private function validateKey(string $key): bool
     {
         if (substr($key, 0, 4) == 'KEY_') {
             $key = substr($key, 4);
@@ -113,40 +113,40 @@ class Remote
 	/**
 	 * Create the JSON message to send in the websocket request.
      *
-     * @param $sKey
+     * @param string $key
      *
      * @return string
 	 */
-	private function getKeypressMessage($sKey): string
+	private function getKeypressMessage(string $key): string
 	{
-		$aMessage = [
+		$message = [
 			'method' => 'ms.remote.control',
 			'params' => [
 				'Cmd' => 'Click',
-				'DataOfCmd' => $sKey,
+				'DataOfCmd' => $key,
 				'Option' => false,
 				'TypeOfRemote' => 'SendRemoteKey'
 			]
 		];
 
-		return json_encode($aMessage, JSON_PRETTY_PRINT);
+		return json_encode($message, JSON_PRETTY_PRINT);
 	}
 
 	/**
 	 * Add a keypress to the queue.
      *
-	 * @param string $sKey
-	 * @param float $fDelay
+	 * @param string $key
+	 * @param float $delay
 	 */
-	public function queueKey($sKey, $fDelay = 1.0): void
+	public function queueKey(string $key, float $delay = 1.0): void
     {
-        if (!$this->validateKey($sKey)) {
-            throw new UnexpectedValueException("Invalid key: {$sKey}");
+        if (!$this->validateKey($key)) {
+            throw new UnexpectedValueException("Invalid key: {$key}");
         }
 
 		$this->queue[] = [
-		    'key' => $sKey,
-            'delay' => $fDelay
+		    'key' => $key,
+            'delay' => $delay
         ];
 	}
 
@@ -161,38 +161,38 @@ class Remote
 	/**
 	 * Wrapper function to send an individual key to the TV (clears the queue first).
      *
-	 * @param string $sKey
-	 * @param float $fDelay
+	 * @param string $key
+	 * @param float $delay
 	 */
-	public function sendKey($sKey, $fDelay = 1.0): void
+	public function sendKey(string $key, float $delay = 1.0): void
 	{
 		$this->clearQueue();
-		$this->queueKey($sKey, $fDelay);
+		$this->queueKey($key, $delay);
 		$this->sendQueue();
 	}
 
 	/**
 	 * Pop the top key and send it, then schedule the next keypress.
      *
-	 * @param WebSocket $conn
+	 * @param WebSocket $connection
 	 * @param LoopInterface $loop
 	 */
-	private function sendQueueKeys(WebSocket $conn, LoopInterface $loop): void
+	private function sendQueueKeys(WebSocket $connection, LoopInterface $loop): void
 	{
-		$aKeyDef = array_pop($this->queue);
-		if (!is_null($aKeyDef)) {
-			$sKey = $aKeyDef['key'];
-			$jsonMessage = $this->getKeypressMessage($sKey);
-			$this->logger->debug("Sending {$sKey}...");
-			$conn->send($jsonMessage);
+		$queueItem = array_pop($this->queue);
+		if (!is_null($queueItem)) {
+			$key = $queueItem['key'];
+			$jsonMessage = $this->getKeypressMessage($key);
+			$this->logger->debug("Sending {$key}...");
+            $connection->send($jsonMessage);
 
-			$loop->addTimer($aKeyDef['delay'], function() use ($conn, $loop) {
-				$this->sendQueueKeys($conn, $loop);
+			$loop->addTimer($queueItem['delay'], function() use ($connection, $loop) {
+				$this->sendQueueKeys($connection, $loop);
 			});
 		} else {
 			// all keys sent, so disconnect socket
 			$this->logger->debug('Closing websocket');
-			$conn->close();
+            $connection->close();
 		}
 	}
 
@@ -228,30 +228,33 @@ class Remote
 		    'verify_peer' => false,
             'verify_peer_name' => false
         ]);
-		$subProtocols = [];
-		$headers = [];
-		$connector($remoteUrl, $subProtocols, $headers)->then(function(WebSocket $conn) use ($loop, $cacheItem) {
-			$conn->on('message', function(MessageInterface $msg) use ($conn, $loop, $cacheItem) {
-				$oMsg = json_decode($msg);
-				if ($oMsg->event == 'ms.channel.connect') {
-                    if (property_exists($oMsg->data, 'token')) {
-                        $cacheItem->set($oMsg->data->token);
-                        $this->cache->save($cacheItem);
+
+		$connector($remoteUrl)->then(
+            function(WebSocket $connection) use ($loop, $cacheItem) {
+                $connection->on(
+                    'message',
+                    function(MessageInterface $messageJSON) use ($connection, $loop, $cacheItem) {
+                        $message = json_decode($messageJSON);
+                        if ($message->event == 'ms.channel.connect') {
+                            if (property_exists($message->data, 'token')) {
+                                $cacheItem->set($message->data->token);
+                                $this->cache->save($cacheItem);
+                            }
+
+                            $this->logger->debug('Connected');
+                            $this->sendQueueKeys($connection, $loop);
+                        } else {
+                            $this->logger->error("Unknown message: {$messageJSON}");
+                            throw new RemoteException("Unknown message received: {$messageJSON}");
+                        }
                     }
-
-					$this->logger->debug('Connected');
-					$this->sendQueueKeys($conn, $loop);
-				} else {
-					$this->logger->error("Unknown message: {$msg}");
-					throw new RemoteException("Unknown message received: {$msg}");
-				}
-			});
-		
-
-		}, function($e) {
-			$this->logger->error("Could not connect: {$e->getMessage()}");
-			throw new RemoteException("Could not connect: {$e->getMessage()}", NULL, $e);
-		});
+                );
+            },
+            function($e) {
+                $this->logger->error("Could not connect: {$e->getMessage()}");
+                throw new RemoteException("Could not connect: {$e->getMessage()}", NULL, $e);
+            }
+        );
 
 		$loop->run();
 	}
