@@ -60,6 +60,18 @@ class Remote
 	 */
 	private $queue = [];
 
+	// Remote connection URL.
+	private const REMOTE_URL = '%s://%s:%d/api/v2/channels/samsung.remote.control?name=%s%s';
+
+	// Token querystring part of the remote connection URL.
+	private const REMOTE_URL_TOKEN_QUERY = '&token=%s';
+
+	// Security context settings for the websocket connector.
+	private const SECURE_CONTEXT = [
+        'verify_peer' => false,
+        'verify_peer_name' => false
+    ];
+
 	/**
 	 * Remote constructor.
      *
@@ -214,11 +226,14 @@ class Remote
 		$cacheItem = $this->cache->getItem('remote_token');
         $tokenQuery = '';
 		if ($cacheItem->isHit()) {
-            $tokenQuery = "&token={$cacheItem->get()}";
+            $tokenQuery = sprintf(
+                self::REMOTE_URL_TOKEN_QUERY,
+                $cacheItem->get()
+            );
         }
 
 		$remoteUrl = sprintf(
-		    '%s://%s:%d/api/v2/channels/samsung.remote.control?name=%s%s',
+		    self::REMOTE_URL,
             $this->protocol,
             $this->host,
             $this->port,
@@ -229,10 +244,7 @@ class Remote
 		$this->logger->debug("Connecting to {$remoteUrl}");
 
 		$loop = ReactFactory::create();
-		$connector = new Connector($loop, null, [
-		    'verify_peer' => false,
-            'verify_peer_name' => false
-        ]);
+		$connector = new Connector($loop, null, self::SECURE_CONTEXT);
 
 		$connector($remoteUrl)->then(
             function(WebSocket $connection) use ($loop, $cacheItem) {
@@ -257,7 +269,7 @@ class Remote
             },
             function($e) {
                 $this->logger->error("Could not connect: {$e->getMessage()}");
-                throw new RemoteException("Could not connect: {$e->getMessage()}", NULL, $e);
+                throw new RemoteException("Could not connect: {$e->getMessage()}", null, $e);
             }
         );
 
