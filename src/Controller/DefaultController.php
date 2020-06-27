@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Form\Type\RemoteType;
 use App\Library\Remote;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -19,34 +21,53 @@ class DefaultController extends AbstractController
     private $remote;
 
     /**
+     * @var array
+     */
+    private $validKeys;
+
+    /**
      * DefaultController constructor.
      *
      * @param Remote $remote
+     * @param array $validKeys
      */
-    public function __construct(Remote $remote)
+    public function __construct(Remote $remote, array $validKeys)
     {
         $this->remote = $remote;
+        $this->validKeys = $validKeys;
     }
 
     /**
      * Index action.
      *
+     * @param Request $request
+     *
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $key = isset($_GET['key']) ? 'KEY_' . strtoupper($_GET['key']) : 'KEY_HOME';
+        $formRemote = new \App\Form\Remote();
 
-        $error = false;
-        try {
-            $this->remote->sendKey($key);
-        } catch (\Exception $e) {
-            $error = $e->getMessage();
+        $form = $this->createForm(RemoteType::class, $formRemote, [
+            'choices' => $this->validKeys
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formRemote = $form->getData();
+            $key = $formRemote->getKey();
+
+            try {
+                $this->remote->sendKey("KEY_{$key}");
+
+                $this->addFlash('success', "Successfully sent the {$key} request.");
+            } catch (\Exception $e) {
+                $this->addFlash('danger', "An error occurred while sending the {$key} request.");
+            }
         }
 
         return $this->render('remote/index.html.twig', [
-            'key' => $key,
-            'error' => $error
+            'form' => $form->createView()
         ]);
     }
 }

@@ -18,6 +18,11 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    App\Controller\DefaultController:
+        arguments:
+            - '@App\Library\Remote'
+            - '%app.remote.valid_keys%'
+
     App\Library\Remote:
         arguments:
             - '@cache.app'
@@ -26,7 +31,6 @@ services:
             - '%app.remote.protocol.secure%'
             - '%app.remote.port.secure%'
             - '%app.remote.name%'
-            - '%app.remote.valid_keys%'
 
     App\Library\RemoteLogger:
         class: Monolog\Logger

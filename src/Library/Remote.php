@@ -50,11 +50,6 @@ class Remote
 	 */
 	private $appName;
 
-    /**
-     * @var array
-     */
-    private $validKeys;
-
 	/**
 	 * @var array
 	 */
@@ -81,7 +76,6 @@ class Remote
      * @param string $protocol
      * @param int $port
      * @param string $appName
-     * @param array $validKeys
 	 */
 	public function __construct(
         AdapterInterface $cache,
@@ -89,8 +83,7 @@ class Remote
 	    string $host,
         string $protocol,
         int $port,
-        string $appName,
-        array $validKeys
+        string $appName
     ) {
         $this->cache = $cache;
         $this->logger = $logger;
@@ -98,7 +91,6 @@ class Remote
         $this->protocol = $protocol;
         $this->port = $port;
         $this->appName = $appName;
-        $this->validKeys = $validKeys;
 	}
 
 	/**
@@ -109,22 +101,6 @@ class Remote
 	public function getHost(): string
 	{
 		return $this->host;
-	}
-
-	/**
-	 * Validate a key against the list of valid keys.
-     *
-	 * @param string $key
-     *
-	 * @return bool
-	 */
-	private function validateKey(string $key): bool
-    {
-        if (substr($key, 0, 4) == 'KEY_') {
-            $key = substr($key, 4);
-        }
-
-		return (empty($this->validKeys) || in_array($key, $this->validKeys));
 	}
 
 	/**
@@ -157,10 +133,6 @@ class Remote
 	 */
 	public function queueKey(string $key, float $delay = 1.0): void
     {
-        if (!$this->validateKey($key)) {
-            throw new UnexpectedValueException("Invalid key: {$key}");
-        }
-
 		$this->queue[] = [
 		    'key' => $key,
             'delay' => $delay
