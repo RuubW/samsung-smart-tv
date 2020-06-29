@@ -1,0 +1,26 @@
+remote:
+    command:
+        argument:
+            key: 'De actie om te versturen'
+        description: 'Verstuur een remote actie'
+        error: 'Er is een fout opgetreden: {message}'
+        info: 'Actie {key} wordt verstuurd naar {host}'
+        success: 'Actie {key} is met succes verzonden'
+    controller:
+        success: >-
+            {count, plural,
+                one   {Actie {keys} is met succes verzonden.}
+                other {Acties {keys} zijn met succes verzonden.}
+            }
+        error: >-
+            {count, plural,
+                one   {Er is een fout opgetreden tijdens het versturen van actie {keys}.}
+                other {Er is een fout opgetreden tijdens het versturen van acties {keys}.}
+            }
+    form:
+        help: 'Selecteer meerdere acties met Ctrl/Cmd + klik'
+        keys: 'Beschikbare acties'
+        send: 'Verstuur'
+    template:
+        description: 'Welkom bij deze demo-applicatie voor de Samsung Smart TV Remote client geschreven in PHP.'
+        instructions: 'Selecteer één of meerdere waardes in de dropdown hieronder en klik op de knop om het formulier te versturen.'

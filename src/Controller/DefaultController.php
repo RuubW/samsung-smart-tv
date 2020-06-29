@@ -8,6 +8,7 @@ use App\Library\RemoteClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DefaultController.
@@ -16,6 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DefaultController extends AbstractController
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
     /**
      * @var RemoteClient
      */
@@ -29,11 +35,16 @@ class DefaultController extends AbstractController
     /**
      * DefaultController constructor.
      *
+     * @param TranslatorInterface $translator
      * @param RemoteClient $remoteClient
      * @param array $validKeys
      */
-    public function __construct(RemoteClient $remoteClient, array $validKeys)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        RemoteClient $remoteClient,
+        array $validKeys
+    ) {
+        $this->translator = $translator;
         $this->remoteClient = $remoteClient;
         $this->validKeys = $validKeys;
     }
@@ -62,9 +73,21 @@ class DefaultController extends AbstractController
             try {
                 $this->remoteClient->sendKeys($keys);
 
-                $this->addFlash('success', "Successfully sent {$keyString}.");
-            } catch (\Exception $e) {
-                $this->addFlash('danger', "An error occurred while sending {$keyString}.");
+                $this->addFlash(
+                    'success',
+                    $this->translator->trans('remote.controller.success', [
+                        'count' => count($keys),
+                        'keys' => implode(', ', $keys)
+                    ])
+                );
+            } catch (\Exception $e) {throw $e;
+                $this->addFlash(
+                    'danger',
+                    $this->translator->trans('remote.controller.error', [
+                        'count' => count($keys),
+                        'keys' => implode(', ', $keys)
+                    ])
+                );
             }
         }
 

@@ -23,14 +23,15 @@ class RemoteType extends AbstractType
                 'required' => true,
                 'expanded' => false,
                 'multiple' => true,
+                'label' => 'remote.form.keys',
                 'choices' => $options['choices'],
                 'choice_label' => function($choice, $key, $value) {
                     return strtoupper($choice);
                 },
-                'help' => 'Select multiple values using Ctrl/Cmd + click'
+                'help' => 'remote.form.help'
             ])
             ->add('save', SubmitType::class, [
-                'label' => 'Send'
+                'label' => 'remote.form.send'
             ])
         ;
     }
