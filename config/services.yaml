@@ -1,12 +1,7 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
-parameters:
+imports:
+    - { resource: 'parameters.yaml' }
 
 services:
-    # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
@@ -23,14 +18,19 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
-
-    App\Library\Remote:
+    App\Controller\DefaultController:
         arguments:
-            - '%env(TV_IP)%'
+            - '@App\Library\RemoteClient'
+            - '%app.remote.valid_keys%'
+
+    App\Library\RemoteClient:
+        arguments:
             - '@cache.app'
             - '@App\Library\RemoteLogger'
+            - '%env(TV_IP)%'
+            - '%app.remote.protocol.secure%'
+            - '%app.remote.port.secure%'
+            - '%app.remote.name%'
 
     App\Library\RemoteLogger:
         class: Monolog\Logger

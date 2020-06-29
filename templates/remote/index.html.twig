@@ -1,13 +1,10 @@
 {% extends 'base.html.twig' %}
 
-
 {% block body %}
-    <h1 class="h3 mb-3">Samsung Smart TV remote</h1>
-    <div class="">
-        {% if error %}
-            Error: <span class="text-danger">{{ error }}<span>
-        {% else %}
-                Sent the <span class="text-primary">{{ key }}</span> request.
-        {% endif %}
+    <div class="form-group">
+        {{ form_start(form) }}
+            {{ form_errors(form, {'attr': {'class': 'alert alert-danger' } }) }}
+            {{ form_widget(form) }}
+        {{ form_end(form) }}
     </div>
 {% endblock %}

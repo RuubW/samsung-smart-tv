@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
-use App\Library\Remote;
+use App\Form\RemoteForm;
+use App\Form\Type\RemoteType;
+use App\Library\RemoteClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -14,39 +17,59 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends AbstractController
 {
     /**
-     * @var Remote
+     * @var RemoteClient
      */
-    private $remote;
+    private $remoteClient;
+
+    /**
+     * @var array
+     */
+    private $validKeys;
 
     /**
      * DefaultController constructor.
      *
-     * @param Remote $remote
+     * @param RemoteClient $remoteClient
+     * @param array $validKeys
      */
-    public function __construct(Remote $remote)
+    public function __construct(RemoteClient $remoteClient, array $validKeys)
     {
-        $this->remote = $remote;
+        $this->remoteClient = $remoteClient;
+        $this->validKeys = $validKeys;
     }
 
     /**
      * Index action.
      *
+     * @param Request $request
+     *
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $key = isset($_GET['key']) ? 'KEY_' . strtoupper($_GET['key']) : 'KEY_HOME';
+        $form = $this->createForm(RemoteType::class, new RemoteForm(), [
+            'choices' => $this->validKeys
+        ]);
 
-        $error = false;
-        try {
-            $this->remote->sendKey($key);
-        } catch (\Exception $e) {
-            $error = $e->getMessage();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var RemoteForm $formData */
+            $formData = $form->getData();
+
+            $keys = $formData->getKeys();
+            $keyString = implode(', ', $keys);
+
+            try {
+                $this->remoteClient->sendKeys($keys);
+
+                $this->addFlash('success', "Successfully sent {$keyString}.");
+            } catch (\Exception $e) {
+                $this->addFlash('danger', "An error occurred while sending {$keyString}.");
+            }
         }
 
         return $this->render('remote/index.html.twig', [
-            'key' => $key,
-            'error' => $error
+            'form' => $form->createView()
         ]);
     }
 }

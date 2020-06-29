@@ -2,13 +2,25 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Samsung Smart TV{% endblock %}</title>
+        <title>
+            {% block title %}
+                {{ app_name }}
+            {% endblock %}
+        </title>
         {% block stylesheets %}
             <link rel="stylesheet" type="text/css" href="build/app.css">
         {% endblock %}
     </head>
     <body class="m-3">
         <div class="container-fluid bg-light text-dark rounded-sm pt-3 pb-3">
+            <h1 class="h3 mb-3">{{ app_name }}</h1>
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-{{ label }} alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endfor %}
             {% block body %}{% endblock %}
         </div>
         {% block javascripts %}
