@@ -13,12 +13,12 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 use UnexpectedValueException;
 
 /**
- * Class Remote.
+ * Class RemoteClient.
  * Based on https://github.com/benreidnet/samsungtv
  *
  * @package App\Library
  */
-class Remote
+class RemoteClient
 {
     /**
      * @var AdapterInterface
@@ -68,7 +68,7 @@ class Remote
     ];
 
 	/**
-	 * Remote constructor.
+	 * RemoteClient constructor.
      *
      * @param AdapterInterface $cache
      * @param LoggerInterface $logger

@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Library\Remote;
+use App\Library\RemoteClient;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,19 +21,19 @@ class RemoteCommand extends Command
     protected static $defaultName = 'app:remote';
 
     /**
-     * @var Remote
+     * @var RemoteClient
      */
-    private $remote;
+    private $remoteClient;
 
     /**
      * RemoteCommand constructor.
      *
-     * @param Remote $remote
+     * @param RemoteClient $remoteClient
      * @param string|null $name
      */
-    public function __construct(Remote $remote, string $name = null)
+    public function __construct(RemoteClient $remoteClient, string $name = null)
     {
-        $this->remote = $remote;
+        $this->remoteClient = $remoteClient;
 
         parent::__construct($name);
     }
@@ -60,10 +60,10 @@ class RemoteCommand extends Command
     {
         $key = strtoupper($input->getArgument('key'));
 
-        $output->writeln("Sending key {$key} to {$this->remote->getHost()}");
+        $output->writeln("Sending key {$key} to {$this->remoteClient->getHost()}");
 
         try {
-            $this->remote->sendKey($key);
+            $this->remoteClient->sendKey($key);
 
             $output->writeln("Successfully sent key {$key}");
 

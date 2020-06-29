@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Form\Remote as RemoteForm;
+use App\Form\RemoteForm;
 use App\Form\Type\RemoteType;
-use App\Library\Remote;
+use App\Library\RemoteClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,9 +17,9 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends AbstractController
 {
     /**
-     * @var Remote
+     * @var RemoteClient
      */
-    private $remote;
+    private $remoteClient;
 
     /**
      * @var array
@@ -29,12 +29,12 @@ class DefaultController extends AbstractController
     /**
      * DefaultController constructor.
      *
-     * @param Remote $remote
+     * @param RemoteClient $remoteClient
      * @param array $validKeys
      */
-    public function __construct(Remote $remote, array $validKeys)
+    public function __construct(RemoteClient $remoteClient, array $validKeys)
     {
-        $this->remote = $remote;
+        $this->remoteClient = $remoteClient;
         $this->validKeys = $validKeys;
     }
 
@@ -60,7 +60,7 @@ class DefaultController extends AbstractController
             $keyString = implode(', ', $keys);
 
             try {
-                $this->remote->sendKeys($keys);
+                $this->remoteClient->sendKeys($keys);
 
                 $this->addFlash('success', "Successfully sent {$keyString}.");
             } catch (\Exception $e) {

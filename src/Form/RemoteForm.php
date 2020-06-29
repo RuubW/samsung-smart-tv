@@ -5,11 +5,11 @@ namespace App\Form;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Remote.
+ * Class RemoteForm.
  *
  * @package App\Form
  */
-class Remote
+class RemoteForm
 {
     /**
      * @var array
