@@ -1,0 +1,13 @@
+{% set current_path = app.request.get('_route') %}
+
+{% for locale in locale_list %}
+    {% if loop.index > 1 %}
+        |
+    {% endif %}
+
+    {% if app.request.locale == locale %}
+        {{ locale|upper }}
+    {% else %}
+        <a href="{{ path(current_path, {_locale: locale}) }}">{{ locale|upper }}</a>
+    {% endif %}
+{% endfor %}

@@ -3,3 +3,5 @@ twig:
     form_themes: ['bootstrap_4_layout.html.twig']
     globals:
         app_name: '%app.remote.name%'
+        base_url: '%router.request_context.base_url%'
+        locale_list: '%app.locale.list%'

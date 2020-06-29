@@ -8,24 +8,39 @@
             {% endblock %}
         </title>
         {% block stylesheets %}
-            <link rel="stylesheet" type="text/css" href="build/app.css">
+            <link rel="stylesheet" type="text/css" href="{{ base_url }}/build/app.css">
         {% endblock %}
     </head>
     <body class="m-3">
-        <div class="container-fluid bg-light text-dark rounded-sm pt-3 pb-3">
-            <h1 class="h3 mb-3">{{ app_name }}</h1>
-            {% for label, messages in app.flashes %}
-                <div class="alert alert-{{ label }} alert">
-                    {% for message in messages %}
-                        {{ message }}
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            {% block body %}{% endblock %}
-        </div>
-        {% block javascripts %}
-            <script type="text/javascript" src="build/app.js"></script>
-            <script type="text/javascript" src="build/runtime.js"></script>
+        {% block body %}
+            <div class="container-fluid bg-light text-dark rounded-sm pt-3 pb-3">
+                {% block content_header %}
+                    <div class="mb-3 clearfix">
+                        <h1 class="d-inline-block float-left h3 mb-0">
+                            {% block content_title %}
+                                {{ app_name }}
+                            {% endblock %}
+                        </h1>
+
+                        <div class="d-inline-block float-right mt-1">
+                            {% block content_locale_switch %}
+                                {% include 'partial/locale_switch.html.twig' %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                {% endblock %}
+
+                {% block content_flash %}
+                    {% include 'partial/flash.html.twig' %}
+                {% endblock %}
+
+                {% block content %}{% endblock %}
+            </div>
+
+            {% block javascripts %}
+                <script type="text/javascript" src="{{ base_url }}/build/app.js"></script>
+                <script type="text/javascript" src="{{ base_url }}/build/runtime.js"></script>
+            {% endblock %}
         {% endblock %}
     </body>
 </html>

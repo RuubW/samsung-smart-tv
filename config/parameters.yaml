@@ -1,4 +1,8 @@
 parameters:
+    app.locale: 'en'
+    app.locale.filter: 'en|nl'
+    app.locale.list: ['en', 'nl']
+
     app.remote.name: 'PHP Smart TV Remote'
     app.remote.protocol.insecure: 'ws'
     app.remote.protocol.secure: 'wss'

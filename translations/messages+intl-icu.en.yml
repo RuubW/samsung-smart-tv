@@ -21,3 +21,6 @@ remote:
         help: 'Select multiple values using Ctrl/Cmd + click'
         keys: 'Available keys'
         send: 'Send'
+    template:
+        description: 'Welcome to this demo application for the Samsung Smart TV Remote client written in PHP.'
+        instructions: 'Please select one or multiple keys from the dropdown below and click the button to submit the form.'
