@@ -7,6 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class RemoteCommand.
@@ -21,6 +22,11 @@ class RemoteCommand extends Command
     protected static $defaultName = 'app:remote';
 
     /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * @var RemoteClient
      */
     private $remoteClient;
@@ -28,11 +34,16 @@ class RemoteCommand extends Command
     /**
      * RemoteCommand constructor.
      *
+     * @param TranslatorInterface $translator
      * @param RemoteClient $remoteClient
      * @param string|null $name
      */
-    public function __construct(RemoteClient $remoteClient, string $name = null)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        RemoteClient $remoteClient,
+        string $name = null
+    ) {
+        $this->translator = $translator;
         $this->remoteClient = $remoteClient;
 
         parent::__construct($name);
@@ -42,10 +53,17 @@ class RemoteCommand extends Command
      * Configure the command.
      */
     protected function configure()
-    {
+    {$this->translator;
         $this
-            ->setDescription('Execute a remote key function')
-            ->addArgument('key', InputArgument::OPTIONAL, 'The key to execute', 'home');
+            ->setDescription(
+                $this->translator->trans('remote.command.description')
+            )
+            ->addArgument(
+                'key',
+                InputArgument::OPTIONAL,
+                $this->translator->trans('remote.command.argument.key'),
+                'home'
+            );
     }
 
     /**
@@ -60,16 +78,29 @@ class RemoteCommand extends Command
     {
         $key = strtoupper($input->getArgument('key'));
 
-        $output->writeln("Sending key {$key} to {$this->remoteClient->getHost()}");
+        $output->writeln(
+            $this->translator->trans('remote.command.info', [
+                'key' => $key,
+                'host' => $this->remoteClient->getHost()
+            ])
+        );
 
         try {
             $this->remoteClient->sendKey($key);
 
-            $output->writeln("Successfully sent key {$key}");
+            $output->writeln(
+                $this->translator->trans('remote.command.success', [
+                    'key' => $key
+                ])
+            );
 
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            $output->writeln("An error occurred: {$e->getMessage()}");
+            $output->writeln(
+                $this->translator->trans('remote.command.error', [
+                    'message' => $e->getMessage()
+                ])
+            );
         }
 
         return Command::FAILURE;

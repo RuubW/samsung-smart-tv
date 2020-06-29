@@ -1,0 +1,23 @@
+remote:
+    command:
+        argument:
+            key: 'The key to send'
+        description: 'Send a remote key command'
+        error: 'An error occurred: {message}'
+        info: 'Sending key {key} to {host}'
+        success: 'Successfully sent key {key}'
+    controller:
+        success: >-
+            {count, plural,
+                one   {Successfully sent key {keys}.}
+                other {Successfully sent keys {keys}.}
+            }
+        error : >-
+            {count, plural,
+                one   {An error occurred while sending key {keys}.}
+                other {An error occurred while sending keys {keys}.}
+            }
+    form:
+        help: 'Select multiple values using Ctrl/Cmd + click'
+        keys: 'Available keys'
+        send: 'Send'
