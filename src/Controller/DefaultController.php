@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\Remote as RemoteForm;
 use App\Form\Type\RemoteType;
 use App\Library\Remote;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,23 +47,24 @@ class DefaultController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $formRemote = new \App\Form\Remote();
-
-        $form = $this->createForm(RemoteType::class, $formRemote, [
+        $form = $this->createForm(RemoteType::class, new RemoteForm(), [
             'choices' => $this->validKeys
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $formRemote = $form->getData();
-            $key = $formRemote->getKey();
+            /** @var RemoteForm $formData */
+            $formData = $form->getData();
+
+            $keys = $formData->getKeys();
+            $keyString = implode(', ', $keys);
 
             try {
-                $this->remote->sendKey("KEY_{$key}");
+                $this->remote->sendKeys($keys);
 
-                $this->addFlash('success', "Successfully sent the {$key} request.");
+                $this->addFlash('success', "Successfully sent {$keyString}.");
             } catch (\Exception $e) {
-                $this->addFlash('danger', "An error occurred while sending the {$key} request.");
+                $this->addFlash('danger', "An error occurred while sending {$keyString}.");
             }
         }
 

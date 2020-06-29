@@ -19,14 +19,15 @@ class RemoteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('key', ChoiceType::class, [
-                'expanded' => true,
-                'multiple' => false,
+            ->add('keys', ChoiceType::class, [
+                'required' => true,
+                'expanded' => false,
+                'multiple' => true,
                 'choices' => $options['choices'],
-                'choice_label' => function ($choice, $key, $value) {
+                'choice_label' => function($choice, $key, $value) {
                     return strtoupper($choice);
                 },
-                'required' => true
+                'help' => 'Select multiple values using Ctrl/Cmd + click'
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Send'

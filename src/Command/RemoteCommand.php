@@ -58,7 +58,7 @@ class RemoteCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $key = 'KEY_' . strtoupper($input->getArgument('key'));
+        $key = strtoupper($input->getArgument('key'));
 
         $output->writeln("Sending key {$key} to {$this->remote->getHost()}");
 

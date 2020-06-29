@@ -116,7 +116,7 @@ class Remote
 			'method' => 'ms.remote.control',
 			'params' => [
 				'Cmd' => 'Click',
-				'DataOfCmd' => $key,
+				'DataOfCmd' => "KEY_{$key}",
 				'Option' => false,
 				'TypeOfRemote' => 'SendRemoteKey'
 			]
@@ -159,6 +159,21 @@ class Remote
 		$this->queueKey($key, $delay);
 		$this->sendQueue();
 	}
+
+    /**
+     * Wrapper function to send an array of keys to the TV (clears the queue first).
+     *
+     * @param array $keys
+     * @param float $delay
+     */
+    public function sendKeys(array $keys, float $delay = 1.0): void
+    {
+        $this->clearQueue();
+        foreach ($keys as $key) {
+            $this->queueKey($key, $delay);
+        }
+        $this->sendQueue();
+    }
 
 	/**
 	 * Pop the top key and send it, then schedule the next keypress.

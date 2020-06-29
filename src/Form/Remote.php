@@ -12,29 +12,29 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Remote
 {
     /**
-     * @var string
+     * @var array
      *
      * @Assert\NotBlank()
      */
-    protected $key;
+    protected $keys;
 
     /**
-     * Get the selected key.
+     * Get the selected keys.
      *
-     * @return string
+     * @return array
      */
-    public function getKey()
+    public function getKeys()
     {
-        return $this->key;
+        return $this->keys;
     }
 
     /**
-     * Set the selected key.
+     * Set the selected keys.
      *
-     * @param $key
+     * @param array $keys
      */
-    public function setKey($key)
+    public function setKeys(array $keys)
     {
-        $this->key = $key;
+        $this->keys = $keys;
     }
 }
