@@ -53,7 +53,7 @@ class RemoteCommand extends Command
      * Configure the command.
      */
     protected function configure()
-    {$this->translator;
+    {
         $this
             ->setDescription(
                 $this->translator->trans('remote.command.description')
