@@ -1,13 +1,10 @@
 {% set current_path = app.request.get('_route') %}
 
 {% for locale in locale_list %}
-    {% if loop.index > 1 %}
-        |
-    {% endif %}
+    {% set is_disabled = (app.request.locale == locale) %}
 
-    {% if app.request.locale == locale %}
+    <a class="btn-secondary btn {% if is_disabled %}disabled{% endif %}"
+       href="{{ path(current_path, {_locale: locale}) }}">
         {{ locale|upper }}
-    {% else %}
-        <a href="{{ path(current_path, {_locale: locale}) }}">{{ locale|upper }}</a>
-    {% endif %}
+    </a>
 {% endfor %}
