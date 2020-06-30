@@ -87,6 +87,9 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
+    "laminas/laminas-zendframework-bridge": {
+        "version": "1.0.4"
+    },
     "monolog/monolog": {
         "version": "2.1.0"
     },
@@ -579,6 +582,9 @@
     },
     "twig/twig": {
         "version": "v3.0.3"
+    },
+    "webimpress/safe-writer": {
+        "version": "2.0.1"
     },
     "webmozart/assert": {
         "version": "1.9.0"
