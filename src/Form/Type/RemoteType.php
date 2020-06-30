@@ -25,7 +25,7 @@ class RemoteType extends AbstractType
                 'multiple' => true,
                 'label' => 'remote.form.keys',
                 'choices' => $options['choices'],
-                'choice_label' => function($choice, $key, $value) {
+                'choice_label' => function ($choice, $key, $value) {
                     return strtoupper($choice);
                 },
                 'help' => 'remote.form.help'

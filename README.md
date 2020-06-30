@@ -38,6 +38,30 @@ Run the following command with a valid key as the only argument:
 
 `bin/console app:remote home`
 
+### PHPCS
+
+Bash into the PHP container:
+
+`docker-compose exec php-fpm bash`
+
+Then run the following command:
+
+`bin/phpcs`
+
+Or the following command to automatically fix errors where possible:
+ 
+`bin/phpcbf`
+
+### PHPUnit
+
+Bash into the PHP container:
+
+`docker-compose exec php-fpm bash`
+
+Then run the following command:
+
+`bin/phpunit`
+
 ## Quirks
 
 - This application cuts some corners in security by disabling SSL peer verification. Be aware of this before deploying in a production environment.
