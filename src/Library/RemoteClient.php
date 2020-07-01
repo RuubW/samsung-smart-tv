@@ -10,7 +10,6 @@ use Ratchet\Client\Connector;
 use Psr\Log\LoggerInterface;
 use Ratchet\Client\WebSocket;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
-use UnexpectedValueException;
 
 /**
  * Class RemoteClient.
@@ -134,7 +133,7 @@ class RemoteClient
     public function queueKey(string $key, float $delay = 1.0): void
     {
         $this->queue[] = [
-            'key' => $key,
+            'key' => strtoupper($key),
             'delay' => $delay
         ];
     }
@@ -206,7 +205,7 @@ class RemoteClient
     public function sendQueue(): void
     {
         if (count($this->queue) == 0) {
-            $this->logger->warn('No keys to send');
+            $this->logger->warning('No keys to send');
             return;
         }
 

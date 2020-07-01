@@ -7,6 +7,7 @@ use PHPUnit\Framework\MockObject\MockObject ;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\CacheItem;
 
 /**
  * Class RemoteClientTest.
@@ -35,7 +36,6 @@ class RemoteClientTest extends TestCase
      */
     protected function setUp()
     {
-        // mocks of cache, logger, connector, WebSocket
         $this->cache = $this->createMock(AdapterInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
@@ -47,8 +47,6 @@ class RemoteClientTest extends TestCase
             8002,
             'RemoteClient Test'
         );
-
-        // secure, insecure
     }
 
     /**
@@ -61,6 +59,9 @@ class RemoteClientTest extends TestCase
         $this->logger = null;
     }
 
+    /**
+     * Test whether the host is correctly set by the RemoteClient constructor.
+     */
     public function testHostIsCorrectlySet()
     {
         $host = $this->remoteClient->getHost();
@@ -68,30 +69,87 @@ class RemoteClientTest extends TestCase
         $this->assertEquals('192.168.0.0', $host);
     }
 
-    public function testKeypressMessageisCorrectlyGenerated()
+    /**
+     * Test whether the sending of the queue is halted when it is empty.
+     */
+    public function testSendQueueExecutionIsHaltedWhenEmpty()
     {
-        // function is private so test through queue sending
+        $this->logger
+            ->expects($this->once())
+            ->method('warning');
 
-        $this->assertFalse(false);
+        $this->logger
+            ->expects($this->never())
+            ->method('debug');
+
+        $this->cache
+            ->expects($this->never())
+            ->method('getItem');
+
+        $this->remoteClient->sendQueue();
     }
 
-    public function testAddKeytoQueue()
+    /**
+     * Test whether the sending of the queue is executed as expected.
+     */
+    public function testSendQueueExecution()
     {
-        $this->assertFalse(false);
+        $this->logger
+            ->expects($this->never())
+            ->method('warning');
+
+        $this->logger
+            ->expects($this->once())
+            ->method('debug');
+
+        $this->cache
+            ->expects($this->once())
+            ->method('getItem')
+            ->willReturn(new CacheItem());
+
+        $this->remoteClient->queueKey('home');
+        $this->remoteClient->sendQueue();
     }
 
+    /**
+     * Test whether the sending of a single key is executed as expected.
+     */
     public function testSendKey()
     {
-        $this->assertFalse(false);
+        $this->logger
+            ->expects($this->never())
+            ->method('warning');
+
+        $this->logger
+            ->expects($this->once())
+            ->method('debug');
+
+        $this->cache
+            ->expects($this->once())
+            ->method('getItem')
+            ->willReturn(new CacheItem());
+
+        $this->remoteClient->sendKey('home');
     }
 
+    /**
+     * Test whether the sending of multiple keys is executed as expected.
+     */
     public function testSendKeys()
     {
-        $this->assertFalse(false);
-    }
+        $this->logger
+            ->expects($this->never())
+            ->method('warning');
 
-    public function testSendQueue()
-    {
-        $this->assertFalse(false);
+        $this->logger
+            ->expects($this->once())
+            ->method('debug');
+
+        $this->cache
+            ->expects($this->once())
+            ->method('getItem')
+            ->willReturn(new CacheItem());
+
+        $this->remoteClient->sendKeys(['home', 'enter']);
     }
 }
