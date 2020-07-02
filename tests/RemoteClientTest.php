@@ -3,7 +3,7 @@
 namespace App\Tests;
 
 use App\Library\RemoteClient;
-use PHPUnit\Framework\MockObject\MockObject ;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -64,8 +64,10 @@ class RemoteClientTest extends TestCase
      */
     public function testHostIsCorrectlySet()
     {
+        // Retrieve the host.
         $host = $this->remoteClient->getHost();
 
+        // Test whether the host was set as expected.
         $this->assertEquals('192.168.0.0', $host);
     }
 
@@ -74,18 +76,22 @@ class RemoteClientTest extends TestCase
      */
     public function testSendQueueExecutionIsHaltedWhenEmpty()
     {
+        // Empty queue warning logging.
         $this->logger
             ->expects($this->once())
             ->method('warning');
 
+        // Connection debug logging.
         $this->logger
             ->expects($this->never())
             ->method('debug');
 
+        // Cache item retrieval.
         $this->cache
             ->expects($this->never())
             ->method('getItem');
 
+        // Send the (empty) queue.
         $this->remoteClient->sendQueue();
     }
 
@@ -94,20 +100,25 @@ class RemoteClientTest extends TestCase
      */
     public function testSendQueueExecution()
     {
+        // Empty queue warning logging.
         $this->logger
             ->expects($this->never())
             ->method('warning');
 
+        // Connection debug logging.
         $this->logger
             ->expects($this->once())
             ->method('debug');
 
+        // Cache item retrieval.
         $this->cache
             ->expects($this->once())
             ->method('getItem')
             ->willReturn(new CacheItem());
 
+        // Add a key to the queue.
         $this->remoteClient->queueKey('home');
+        // Send the queue.
         $this->remoteClient->sendQueue();
     }
 
@@ -116,19 +127,23 @@ class RemoteClientTest extends TestCase
      */
     public function testSendKey()
     {
+        // Empty queue warning logging.
         $this->logger
             ->expects($this->never())
             ->method('warning');
 
+        // Connection debug logging.
         $this->logger
             ->expects($this->once())
             ->method('debug');
 
+        // Cache item retrieval.
         $this->cache
             ->expects($this->once())
             ->method('getItem')
             ->willReturn(new CacheItem());
 
+        // Send a key.
         $this->remoteClient->sendKey('home');
     }
 
@@ -137,19 +152,23 @@ class RemoteClientTest extends TestCase
      */
     public function testSendKeys()
     {
+        // Empty queue warning logging.
         $this->logger
             ->expects($this->never())
             ->method('warning');
 
+        // Connection debug logging.
         $this->logger
             ->expects($this->once())
             ->method('debug');
 
+        // Cache item retrieval.
         $this->cache
             ->expects($this->once())
             ->method('getItem')
             ->willReturn(new CacheItem());
 
+        // Send a list of keys.
         $this->remoteClient->sendKeys(['home', 'enter']);
     }
 }
