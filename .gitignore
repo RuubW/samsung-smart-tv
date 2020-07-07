@@ -3,9 +3,9 @@
 /nbproject
 
 # Certificate
-*.key
-*.crt
-*.pem
+/*.key
+/*.crt
+/*.pem
 
 ###> symfony/framework-bundle ###
 /.env.local

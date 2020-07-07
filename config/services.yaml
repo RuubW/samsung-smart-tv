@@ -32,6 +32,7 @@ services:
             - '%app.remote.protocol.secure%'
             - '%app.remote.port.secure%'
             - '%app.remote.name%'
+            - '%kernel.environment%'
 
     App\Library\RemoteLogger:
         class: Monolog\Logger

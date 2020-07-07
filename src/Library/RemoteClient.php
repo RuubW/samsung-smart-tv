@@ -50,6 +50,11 @@ class RemoteClient
     private $appName;
 
     /**
+     * @var string
+     */
+    private $environment;
+
+    /**
      * @var array
      */
     private $queue = [];
@@ -60,11 +65,11 @@ class RemoteClient
     // Token querystring part of the remote connection URL.
     private const REMOTE_URL_TOKEN_QUERY = '&token=%s';
 
-    // Security context settings for the websocket connector.
-    private const SECURE_CONTEXT = [
+    // Security context settings for the websocket connector in dev.
+    private const SECURE_CONTEXT_DEV = [
         'verify_peer' => false,
         'verify_peer_name' => false,
-        'allow_self_signed' => true,
+        'allow_self_signed' => true
     ];
 
     /**
@@ -76,6 +81,7 @@ class RemoteClient
      * @param string $protocol
      * @param int $port
      * @param string $appName
+     * @param string $environment
      */
     public function __construct(
         AdapterInterface $cache,
@@ -83,7 +89,8 @@ class RemoteClient
         string $host,
         string $protocol,
         int $port,
-        string $appName
+        string $appName,
+        string $environment
     ) {
         $this->cache = $cache;
         $this->logger = $logger;
@@ -91,6 +98,7 @@ class RemoteClient
         $this->protocol = $protocol;
         $this->port = $port;
         $this->appName = $appName;
+        $this->environment = $environment;
     }
 
     /**
@@ -231,7 +239,11 @@ class RemoteClient
         $this->logger->debug("Connecting to {$remoteUrl}");
 
         $loop = ReactFactory::create();
-        $connector = new Connector($loop, null, self::SECURE_CONTEXT);
+        $connector = new Connector(
+            $loop,
+            null,
+            ($this->environment === 'dev') ? self::SECURE_CONTEXT_DEV : []
+        );
 
         $connector($remoteUrl)->then(
             function (WebSocket $connection) use ($loop, $cacheItem) {
