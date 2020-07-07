@@ -1,4 +1,7 @@
 parameters:
+    router.request_context.scheme: 'https'
+    asset.request_context.secure: true
+
     app.locale: 'en'
     app.locale.filter: 'en|nl'
     app.locale.list: ['en', 'nl']

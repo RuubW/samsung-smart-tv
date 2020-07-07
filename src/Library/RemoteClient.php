@@ -63,7 +63,8 @@ class RemoteClient
     // Security context settings for the websocket connector.
     private const SECURE_CONTEXT = [
         'verify_peer' => false,
-        'verify_peer_name' => false
+        'verify_peer_name' => false,
+        'allow_self_signed' => true,
     ];
 
     /**

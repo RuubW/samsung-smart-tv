@@ -16,11 +16,13 @@ Tested on a 2019 Q-series TV.
 
 1. Clone this repository;
 2. Set up a `.env.local` file in the project root and add the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu on your TV;
-3. Run `docker-compose build` to build the environment;
-4. Run `docker-compose up -d` to start the environment;
-5. Run `docker-compose exec php-fpm bash` to bash into the PHP container;
-6. Run `composer install`;
-7. Run `yarn install` followed by `yarn encore dev` to build the assets.
+3. Create the certificate:
+`openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt`
+4. Run `docker-compose build` to build the environment;
+5. Run `docker-compose up -d` to start the environment;
+6. Run `docker-compose exec php-fpm bash` to bash into the PHP container;
+7. Run `composer install`;
+8. Run `yarn install` followed by `yarn encore dev` to build the assets.
 
 ## Usage
 
