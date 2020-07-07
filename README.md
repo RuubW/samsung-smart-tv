@@ -26,7 +26,7 @@ Tested on a 2019 Q-series TV.
 
 ### Web client
 
-Visit the client at `http://localhost:8080`
+Visit the client at `http://localhost`
 
 ### CLI
 
