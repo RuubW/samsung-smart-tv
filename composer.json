@@ -1,8 +1,8 @@
 {
-    "name": "symfony/website-skeleton",
+    "name": "ruubw/samsung-smart-tv",
     "type": "project",
     "license": "MIT",
-    "description": "A skeleton to start a new Symfony website",
+    "description": "A Smart TV Remote application using PHP and Symfony",
     "require": {
         "php": "^7.2.5",
         "ext-ctype": "*",
@@ -23,7 +23,6 @@
         "symfony/mime": "*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "*",
-        "symfony/orm-pack": "*",
         "symfony/process": "*",
         "symfony/security-bundle": "*",
         "symfony/serializer-pack": "*",
