@@ -11,7 +11,7 @@ parameters:
     app.remote.protocol.secure: 'wss'
     app.remote.port.insecure: 8001
     app.remote.port.secure: 8002
-    # This list is taken from https://github.com/Bntdumas/SamsungIPRemote/blob/master/samsungKeyCodes.txt
+    # This list is based on https://github.com/Bntdumas/SamsungIPRemote/blob/master/samsungKeyCodes.txt
     app.remote.valid_keys: [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '4_3', '16_9', '3SPEED', 'AD', 'ADDDEL',
         'ALT_MHP', 'ANGLE', 'ANTENA', 'ANYNET', 'ANYVIEW', 'APP_LIST', 'ASPECT', 'AUTO_ARC_ANTENNA_AIR',
