@@ -4,11 +4,11 @@ Based in part on [benreidnet's PHP Samsung TV Remote](https://github.com/benreid
 
 Docker image generated through [PHPDocker.io](https://phpdocker.io/).
 
-Tested on a 2019 Q-series TV.
+Developed and tested with a 2019 Q-series TV.
 
 ## Prerequisites
 
-- Your local system has Docker installed;
+- Your local system has [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed;
 - Your TV is on the same network as your local system;
 - Your TV is a 2016+ model. Anything older is untested.
 
@@ -28,41 +28,55 @@ Tested on a 2019 Q-series TV.
 
 ### Web client
 
-Visit the client at `http://localhost`
+Visit the client at `http://localhost`.
 
 ### CLI
 
 Bash into the PHP container:
 
-`docker-compose exec php-fpm bash`
+```bash
+docker-compose exec php-fpm bash
+```
 
 Run the following command with a valid key as the only argument:
 
-`bin/console app:remote home`
+```bash
+bin/console app:remote home
+```
 
 ### PHPCS
 
 Bash into the PHP container:
 
-`docker-compose exec php-fpm bash`
+```bash
+docker-compose exec php-fpm bash
+```
 
 Then run the following command:
 
-`bin/phpcs`
+```bash
+bin/phpcs
+```
 
 Or the following command to automatically fix errors where possible:
  
-`bin/phpcbf`
+```bash
+bin/phpcbf
+```
 
 ### PHPUnit
 
 Bash into the PHP container:
 
-`docker-compose exec php-fpm bash`
+```bash
+docker-compose exec php-fpm bash
+```
 
 Then run the following command:
 
-`bin/phpunit`
+```bash
+bin/phpunit
+```
 
 ## Quirks
 
