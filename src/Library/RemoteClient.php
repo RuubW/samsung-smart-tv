@@ -13,7 +13,7 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 /**
  * Class RemoteClient.
- * Based on https://github.com/benreidnet/samsungtv
+ * Based on https://github.com/benreidnet/samsungtv.
  *
  * @package App\Library
  */
@@ -62,7 +62,7 @@ class RemoteClient
     // Remote connection URL.
     private const REMOTE_URL = '%s://%s:%d/api/v2/channels/samsung.remote.control?name=%s%s';
 
-    // Token querystring part of the remote connection URL.
+    // Token query string part of the remote connection URL.
     private const REMOTE_URL_TOKEN_QUERY = '&token=%s';
 
     // Security context settings for the websocket connector in dev.
@@ -102,7 +102,7 @@ class RemoteClient
     }
 
     /**
-     * Get the remote host
+     * Get the remote host.
      *
      * @return string
      */
@@ -194,16 +194,21 @@ class RemoteClient
         $queueItem = array_pop($this->queue);
         if (!is_null($queueItem)) {
             $key = $queueItem['key'];
-            $jsonMessage = $this->getKeypressMessage($key);
+
             $this->logger->debug("Sending {$key}...");
+
+            // Prepare and send the message.
+            $jsonMessage = $this->getKeypressMessage($key);
             $connection->send($jsonMessage);
 
+            // Send the next queue key.
             $loop->addTimer($queueItem['delay'], function () use ($connection, $loop) {
                 $this->sendQueueKeys($connection, $loop);
             });
         } else {
-            // all keys sent, so disconnect socket
             $this->logger->debug('Closing websocket');
+
+            // All the keys were sent, disconnect the socket.
             $connection->close();
         }
     }
@@ -218,15 +223,18 @@ class RemoteClient
             return;
         }
 
+        // Retrieve the TV access token.
         $cacheItem = $this->cache->getItem('remote_token');
         $tokenQuery = '';
         if ($cacheItem->isHit()) {
+            // Prepare the access token query string.
             $tokenQuery = sprintf(
                 self::REMOTE_URL_TOKEN_QUERY,
                 $cacheItem->get()
             );
         }
 
+        // Prepare the remote TV URL.
         $remoteUrl = sprintf(
             self::REMOTE_URL,
             $this->protocol,
@@ -251,16 +259,21 @@ class RemoteClient
                     'message',
                     function (MessageInterface $messageJSON) use ($connection, $loop, $cacheItem) {
                         $message = json_decode($messageJSON);
+                        // Handle the handshake response.
                         if ($message->event == 'ms.channel.connect') {
+                            // Save the TV access token.
                             if (property_exists($message->data, 'token')) {
                                 $cacheItem->set($message->data->token);
                                 $this->cache->save($cacheItem);
                             }
 
                             $this->logger->debug('Connected');
+
+                            // Send the queue keys.
                             $this->sendQueueKeys($connection, $loop);
                         } else {
                             $this->logger->error("Unknown message: {$messageJSON}");
+
                             throw new RemoteException("Unknown message received: {$messageJSON}");
                         }
                     }
@@ -268,6 +281,7 @@ class RemoteClient
             },
             function ($e) {
                 $this->logger->error("Could not connect: {$e->getMessage()}");
+
                 throw new RemoteException("Could not connect: {$e->getMessage()}", null, $e);
             }
         );
