@@ -68,7 +68,7 @@ Then run the following command:
 
 - On development environments this application cuts some corners in security by disabling SSL peer verification. Be aware that for this application to run in a production environment it needs a valid certificate.
 - For unclear reasons occasionally a command will be sent but not executed by the TV.
-- Individual TV apps can disable the remote functionality resulting in a "ms.remote.touchDisable" error
+- Individual TV apps can disable the remote functionality resulting in a "ms.remote.touchDisable" error.
 
 ## Disclaimer
 
