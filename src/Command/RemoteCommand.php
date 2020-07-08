@@ -76,6 +76,7 @@ class RemoteCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Retrieve the key.
         $key = strtoupper($input->getArgument('key'));
 
         $output->writeln(
@@ -86,6 +87,7 @@ class RemoteCommand extends Command
         );
 
         try {
+            // Send the key.
             $this->remoteClient->sendKey($key);
 
             $output->writeln(

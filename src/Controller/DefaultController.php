@@ -58,19 +58,22 @@ class DefaultController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        // Prepare the form.
         $form = $this->createForm(RemoteType::class, new RemoteForm(), [
             'choices' => $this->validKeys
         ]);
 
+        // Handle the form request.
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var RemoteForm $formData */
             $formData = $form->getData();
 
+            // Retrieve the key(s).
             $keys = $formData->getKeys();
-            $keyString = implode(', ', $keys);
 
             try {
+                // Send the key(s).
                 $this->remoteClient->sendKeys($keys);
 
                 $this->addFlash(
@@ -91,6 +94,7 @@ class DefaultController extends AbstractController
             }
         }
 
+        // Render the form.
         return $this->render('remote/index.html.twig', [
             'form' => $form->createView()
         ]);

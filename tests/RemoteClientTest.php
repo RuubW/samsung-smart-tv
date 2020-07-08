@@ -32,7 +32,7 @@ class RemoteClientTest extends TestCase
     private $logger;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function setUp()
     {
@@ -50,7 +50,7 @@ class RemoteClientTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function tearDown()
     {
