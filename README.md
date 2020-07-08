@@ -16,8 +16,8 @@ Tested on a 2019 Q-series TV.
 
 1. Clone this repository;
 2. Set up a `.env.local` file in the project root and add the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu on your TV;
-3. Create the certificate:
-`openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt`
+3. Create the SSL certificate files:
+`openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt`;
 4. Run `docker-compose build` to build the environment;
 5. Run `docker-compose up -d` to start the environment;
 6. Run `docker-compose exec php-fpm bash` to bash into the PHP container;
@@ -66,9 +66,9 @@ Then run the following command:
 
 ## Quirks
 
-- This application cuts some corners in security by disabling SSL peer verification. Be aware of this before deploying in a production environment.
+- On development environments this application cuts some corners in security by disabling SSL peer verification. Be aware that for this application to run in a production environment it needs a valid certificate.
 - For unclear reasons occasionally a command will be sent but not executed by the TV.
-- Individual apps can disable the remote functionality resulting in a "ms.remote.touchDisable" error
+- Individual TV apps can disable the remote functionality resulting in a "ms.remote.touchDisable" error
 
 ## Disclaimer
 
