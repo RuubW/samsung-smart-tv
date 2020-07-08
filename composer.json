@@ -1,5 +1,5 @@
 {
-    "name": "ruubw/smart-tv",
+    "name": "ruubw/samsung-smart-tv",
     "type": "project",
     "license": "MIT",
     "description": "A Smart TV Remote application using PHP and Symfony",
