@@ -2,6 +2,11 @@
 /.idea
 /nbproject
 
+# Certificate
+/*.key
+/*.crt
+/*.pem
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
