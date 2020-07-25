@@ -32,6 +32,9 @@
     "monolog/monolog": {
         "version": "2.1.0"
     },
+    "neronmoon/scriptsdev": {
+        "version": "v0.1.7"
+    },
     "nikic/php-parser": {
         "version": "v4.5.0"
     },

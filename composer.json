@@ -36,6 +36,7 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.8",
+        "neronmoon/scriptsdev": "^0.1.7",
         "sensiolabs/security-checker": "^6.0",
         "squizlabs/php_codesniffer": "^3.5",
         "symfony/debug-pack": "*",
