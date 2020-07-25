@@ -83,8 +83,7 @@ class DefaultController extends AbstractController
                         'keys' => implode(', ', $keys)
                     ])
                 );
-            } catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $this->addFlash(
                     'danger',
                     $this->translator->trans('remote.controller.error', [
