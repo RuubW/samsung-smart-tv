@@ -90,6 +90,7 @@
         "hooks": {
             "pre-commit": [
                 "bin/phpcs",
+                "vendor/bin/simple-phpunit",
                 "bin/console security:check"
             ]
         },
