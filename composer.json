@@ -89,9 +89,7 @@
     "extra": {
         "hooks": {
             "pre-commit": [
-                "bin/phpcs",
-                "bin/phpunit",
-                "bin/console security:check"
+                "bin/phpcs"
             ]
         },
         "scripts-dev": {
