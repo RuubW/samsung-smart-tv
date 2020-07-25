@@ -24,11 +24,5 @@ services:
         volumes:
             - .:/application
             - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
-        secrets:
-            - host_ssh_key
         env_file:
             - .env
-
-secrets:
-    host_ssh_key:
-        file: ~/.ssh/id_rsa
