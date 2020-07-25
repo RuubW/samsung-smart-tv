@@ -12,7 +12,6 @@
 
     <file>bin/</file>
     <file>config/</file>
-    <file>migrations/</file>
     <file>public/</file>
     <file>src/</file>
     <file>tests/</file>

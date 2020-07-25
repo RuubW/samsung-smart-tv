@@ -46,6 +46,8 @@ bin/console app:remote home
 
 ### PHPCS
 
+Copy `phpcs.xml.dist` over to `phpcs.xml` and configure.
+
 Bash into the PHP container:
 
 ```bash
@@ -65,6 +67,8 @@ bin/phpcbf
 ```
 
 ### PHPUnit
+
+Copy `phpunit.xml.dist` over to `phpunit.xml` and configure.
 
 Bash into the PHP container:
 
