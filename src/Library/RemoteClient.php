@@ -3,12 +3,12 @@
 namespace App\Library;
 
 use App\Exception\RemoteException;
+use Psr\Log\LoggerInterface;
+use Ratchet\Client\Connector;
+use Ratchet\Client\WebSocket;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use React\EventLoop\Factory as ReactFactory;
 use React\EventLoop\LoopInterface;
-use Ratchet\Client\Connector;
-use Psr\Log\LoggerInterface;
-use Ratchet\Client\WebSocket;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 /**
@@ -40,7 +40,7 @@ class RemoteClient
     private $protocol;
 
     /**
-     * @var integer
+     * @var int
      */
     private $port;
 
@@ -220,6 +220,7 @@ class RemoteClient
     {
         if (count($this->queue) == 0) {
             $this->logger->warning('No keys to send');
+
             return;
         }
 
