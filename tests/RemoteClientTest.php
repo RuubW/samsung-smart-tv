@@ -154,7 +154,7 @@ class RemoteClientTest extends TestCase
     {
         // Empty queue warning logging.
         $this->logger
-            ->expects($this->once())
+            ->expects($this->never())
             ->method('warning');
 
         // Connection debug logging.
