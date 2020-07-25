@@ -93,6 +93,15 @@
                 "bin/console security:check"
             ]
         },
+        "scripts-dev": {
+            "post-install-cmd": [
+                "cghooks add --ignore-lock"
+            ],
+            "post-update-cmd": [
+                "cghooks update"
+            ],
+            "cghooks": "vendor/bin/cghooks"
+        },
         "symfony": {
             "allow-contrib": false,
             "require": "5.1.*"
