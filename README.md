@@ -78,6 +78,20 @@ Then run the following command:
 bin/phpunit
 ```
 
+### Security checker
+
+Bash into the PHP container:
+
+```bash
+docker-compose exec php-fpm bash
+```
+
+Then run the following command:
+
+```bash
+bin/console security:check
+```
+
 ## Quirks
 
 - On development environments this application cuts some corners in security by disabling SSL peer verification. Be aware that for this application to run in a production environment it needs a valid certificate.
