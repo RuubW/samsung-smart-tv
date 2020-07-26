@@ -22,7 +22,8 @@ Developed and tested with a 2019 Q-series TV.
 5. Run `docker-compose up -d` to start the environment;
 6. Run `docker-compose exec php-fpm bash` to bash into the PHP container;
 7. Run `composer install`;
-8. Run `yarn install` followed by `yarn encore dev` to build the assets.
+8. Run `bin/phpunit` to install the PHPunit files. This is required for the pre-push Git hook to work properly;
+9. Run `yarn install` followed by `yarn encore dev` to build the assets.
 
 ## Usage
 
