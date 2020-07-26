@@ -47,7 +47,7 @@ bin/console app:remote home
 
 ### PHPCS
 
-Copy `.php_csdist` over to `.php_cs` and configure.
+Copy `.php_cs.dist` over to `.php_cs` and configure.
 
 Bash into the PHP container:
 
