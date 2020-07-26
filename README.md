@@ -47,7 +47,7 @@ bin/console app:remote home
 
 ### PHPCS
 
-Copy `phpcs.xml.dist` over to `phpcs.xml` and configure.
+Copy `.php_csdist` over to `.php_cs` and configure.
 
 Bash into the PHP container:
 
@@ -55,16 +55,10 @@ Bash into the PHP container:
 docker-compose exec php-fpm bash
 ```
 
-Then run the following command:
+Then run the following command to fix all issues:
 
 ```bash
-bin/phpcs
-```
-
-Or the following command to automatically fix errors where possible:
- 
-```bash
-bin/phpcbf
+bin/php-cs-fixer fix
 ```
 
 ### PHPUnit

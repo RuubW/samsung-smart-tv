@@ -36,6 +36,7 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.8",
+        "friendsofphp/php-cs-fixer": "^2.16",
         "neronmoon/scriptsdev": "^0.1.7",
         "sensiolabs/security-checker": "^6.0",
         "squizlabs/php_codesniffer": "^3.5",
@@ -91,7 +92,7 @@
         "hooks": {
             "pre-commit": [
                 "bin/security-checker security:check",
-                "bin/phpcs --no-cache"
+                "bin/php-cs-fixer fix"
             ],
             "pre-push": [
                 "bin/phpunit"
