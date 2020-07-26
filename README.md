@@ -93,7 +93,7 @@ docker-compose exec php-fpm bash
 Then run the following command:
 
 ```bash
-bin/console security:check
+bin/security-checker security:check
 ```
 
 ## Quirks

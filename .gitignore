@@ -7,6 +7,9 @@
 /*.crt
 /*.pem
 
+# Git hooks
+cghooks.lock
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php

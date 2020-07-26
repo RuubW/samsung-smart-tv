@@ -45,6 +45,7 @@
         "symfony/test-pack": "*"
     },
     "config": {
+        "bin-dir": "bin",
         "optimize-autoloader": true,
         "preferred-install": {
             "*": "dist"
@@ -89,18 +90,20 @@
     "extra": {
         "hooks": {
             "pre-commit": [
-                "bin/console security:check",
-                "bin/phpcs"
+                "bin/security-checker security:check",
+                "bin/phpcs --no-cache"
+            ],
+            "pre-push": [
+                "bin/simple-phpunit"
             ]
         },
         "scripts-dev": {
             "post-install-cmd": [
-                "cghooks add --ignore-lock"
+                "bin/cghooks add --ignore-lock"
             ],
             "post-update-cmd": [
-                "cghooks update"
-            ],
-            "cghooks": "vendor/bin/cghooks"
+                "bin/cghooks update"
+            ]
         },
         "symfony": {
             "allow-contrib": false,

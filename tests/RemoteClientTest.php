@@ -34,7 +34,7 @@ class RemoteClientTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cache = $this->createMock(AdapterInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
@@ -52,7 +52,7 @@ class RemoteClientTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->remoteClient = null;
         $this->cache = null;
