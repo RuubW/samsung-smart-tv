@@ -92,7 +92,7 @@
         "hooks": {
             "pre-commit": [
                 "bin/security-checker security:check",
-                "bin/php-cs-fixer fix"
+                "bin/php-cs-fixer fix && git add ."
             ],
             "pre-push": [
                 "bin/phpunit"

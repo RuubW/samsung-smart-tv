@@ -11,8 +11,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class RemoteType.
- *
- * @package App\Form\Type
  */
 class RemoteType extends AbstractType
 {
@@ -31,10 +29,10 @@ class RemoteType extends AbstractType
                 'choice_label' => function ($choice, $key, $value) {
                     return strtoupper($choice);
                 },
-                'help' => 'remote.form.help'
+                'help' => 'remote.form.help',
             ])
             ->add('save', SubmitType::class, [
-                'label' => 'remote.form.send'
+                'label' => 'remote.form.send',
             ])
         ;
     }
@@ -46,7 +44,7 @@ class RemoteType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => RemoteForm::class,
-            'choices' => []
+            'choices' => [],
         ]);
     }
 }

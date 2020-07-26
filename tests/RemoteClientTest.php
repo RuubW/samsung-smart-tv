@@ -11,8 +11,6 @@ use Symfony\Component\Cache\CacheItem;
 
 /**
  * Class RemoteClientTest.
- *
- * @package App\Tests
  */
 class RemoteClientTest extends TestCase
 {

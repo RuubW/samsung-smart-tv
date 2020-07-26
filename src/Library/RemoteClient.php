@@ -14,8 +14,6 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 /**
  * Class RemoteClient.
  * Based on https://github.com/benreidnet/samsungtv.
- *
- * @package App\Library
  */
 class RemoteClient
 {
@@ -69,19 +67,11 @@ class RemoteClient
     private const SECURE_CONTEXT_DEV = [
         'verify_peer' => false,
         'verify_peer_name' => false,
-        'allow_self_signed' => true
+        'allow_self_signed' => true,
     ];
 
     /**
      * RemoteClient constructor.
-     *
-     * @param AdapterInterface $cache
-     * @param LoggerInterface $logger
-     * @param string $host
-     * @param string $protocol
-     * @param int $port
-     * @param string $appName
-     * @param string $environment
      */
     public function __construct(
         AdapterInterface $cache,
@@ -103,8 +93,6 @@ class RemoteClient
 
     /**
      * Get the remote host.
-     *
-     * @return string
      */
     public function getHost(): string
     {
@@ -113,10 +101,6 @@ class RemoteClient
 
     /**
      * Create the JSON message to send in the websocket request.
-     *
-     * @param string $key
-     *
-     * @return string
      */
     private function getKeypressMessage(string $key): string
     {
@@ -126,8 +110,8 @@ class RemoteClient
                 'Cmd' => 'Click',
                 'DataOfCmd' => "KEY_{$key}",
                 'Option' => false,
-                'TypeOfRemote' => 'SendRemoteKey'
-            ]
+                'TypeOfRemote' => 'SendRemoteKey',
+            ],
         ];
 
         return json_encode($message, JSON_PRETTY_PRINT);
@@ -135,15 +119,12 @@ class RemoteClient
 
     /**
      * Add a keypress to the queue.
-     *
-     * @param string $key
-     * @param float $delay
      */
     public function queueKey(string $key, float $delay = 1.0): void
     {
         $this->queue[] = [
             'key' => strtoupper($key),
-            'delay' => $delay
+            'delay' => $delay,
         ];
     }
 
@@ -157,9 +138,6 @@ class RemoteClient
 
     /**
      * Wrapper function to send an individual key to the TV (clears the queue first).
-     *
-     * @param string $key
-     * @param float $delay
      */
     public function sendKey(string $key, float $delay = 1.0): void
     {
@@ -170,9 +148,6 @@ class RemoteClient
 
     /**
      * Wrapper function to send an array of keys to the TV (clears the queue first).
-     *
-     * @param array $keys
-     * @param float $delay
      */
     public function sendKeys(array $keys, float $delay = 1.0): void
     {
@@ -185,9 +160,6 @@ class RemoteClient
 
     /**
      * Pop the top key and send it, then schedule the next keypress.
-     *
-     * @param WebSocket $connection
-     * @param LoopInterface $loop
      */
     private function sendQueueKeys(WebSocket $connection, LoopInterface $loop): void
     {
@@ -218,7 +190,7 @@ class RemoteClient
      */
     public function sendQueue(): void
     {
-        if (count($this->queue) == 0) {
+        if (0 == count($this->queue)) {
             $this->logger->warning('No keys to send');
 
             return;
@@ -251,7 +223,7 @@ class RemoteClient
         $connector = new Connector(
             $loop,
             null,
-            ($this->environment === 'dev') ? self::SECURE_CONTEXT_DEV : []
+            ('dev' === $this->environment) ? self::SECURE_CONTEXT_DEV : []
         );
 
         $connector($remoteUrl)->then(
@@ -261,7 +233,7 @@ class RemoteClient
                     function (MessageInterface $messageJSON) use ($connection, $loop, $cacheItem) {
                         $message = json_decode($messageJSON);
                         // Handle the handshake response.
-                        if ($message->event == 'ms.channel.connect') {
+                        if ('ms.channel.connect' == $message->event) {
                             // Save the TV access token.
                             if (property_exists($message->data, 'token')) {
                                 $cacheItem->set($message->data->token);
