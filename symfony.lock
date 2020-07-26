@@ -1,4 +1,13 @@
 {
+    "brainmaestro/composer-git-hooks": {
+        "version": "v2.8.3"
+    },
+    "composer/semver": {
+        "version": "1.5.1"
+    },
+    "composer/xdebug-handler": {
+        "version": "1.4.2"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -23,17 +32,35 @@
     "evenement/evenement": {
         "version": "v2.1.0"
     },
+    "friendsofphp/php-cs-fixer": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.2",
+            "ref": "cc05ab6abf6894bddb9bbd6a252459010ebe040b"
+        },
+        "files": [
+            ".php_cs.dist"
+        ]
+    },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
     "monolog/monolog": {
         "version": "2.1.0"
     },
+    "neronmoon/scriptsdev": {
+        "version": "v0.1.7"
+    },
     "nikic/php-parser": {
         "version": "v4.5.0"
     },
     "php": {
         "version": "7.4"
+    },
+    "php-cs-fixer/diff": {
+        "version": "v1.3.0"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.1.0"
@@ -104,16 +131,16 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
-    "squizlabs/php_codesniffer": {
-        "version": "3.0",
+    "sensiolabs/security-checker": {
+        "version": "4.0",
         "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
+            "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "3.0",
-            "ref": "0dc9cceda799fd3a08b96987e176a261028a3709"
+            "version": "4.0",
+            "ref": "160c9b600564faa1224e8f387d49ef13ceb8b793"
         },
         "files": [
-            "phpcs.xml.dist"
+            "config/packages/security_checker.yaml"
         ]
     },
     "symfony/asset": {
@@ -238,9 +265,6 @@
         "version": "v5.1.2"
     },
     "symfony/http-kernel": {
-        "version": "v5.1.2"
-    },
-    "symfony/inflector": {
         "version": "v5.1.2"
     },
     "symfony/intl": {

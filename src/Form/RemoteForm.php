@@ -6,8 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class RemoteForm.
- *
- * @package App\Form
  */
 class RemoteForm
 {
@@ -30,8 +28,6 @@ class RemoteForm
 
     /**
      * Set the selected keys.
-     *
-     * @param array $keys
      */
     public function setKeys(array $keys)
     {

@@ -11,8 +11,6 @@ use Symfony\Component\Cache\CacheItem;
 
 /**
  * Class RemoteClientTest.
- *
- * @package App\Tests
  */
 class RemoteClientTest extends TestCase
 {
@@ -34,7 +32,7 @@ class RemoteClientTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cache = $this->createMock(AdapterInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
@@ -45,14 +43,15 @@ class RemoteClientTest extends TestCase
             '192.168.0.0',
             'wws',
             8002,
-            'RemoteClient Test'
+            'RemoteClient Test',
+            'test'
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->remoteClient = null;
         $this->cache = null;

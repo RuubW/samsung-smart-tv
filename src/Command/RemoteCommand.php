@@ -11,8 +11,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class RemoteCommand.
- *
- * @package App\Command
  */
 class RemoteCommand extends Command
 {
@@ -33,10 +31,6 @@ class RemoteCommand extends Command
 
     /**
      * RemoteCommand constructor.
-     *
-     * @param TranslatorInterface $translator
-     * @param RemoteClient $remoteClient
-     * @param string|null $name
      */
     public function __construct(
         TranslatorInterface $translator,
@@ -69,9 +63,6 @@ class RemoteCommand extends Command
     /**
      * Execute the command.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -82,7 +73,7 @@ class RemoteCommand extends Command
         $output->writeln(
             $this->translator->trans('remote.command.info', [
                 'key' => $key,
-                'host' => $this->remoteClient->getHost()
+                'host' => $this->remoteClient->getHost(),
             ])
         );
 
@@ -92,7 +83,7 @@ class RemoteCommand extends Command
 
             $output->writeln(
                 $this->translator->trans('remote.command.success', [
-                    'key' => $key
+                    'key' => $key,
                 ])
             );
 
@@ -100,7 +91,7 @@ class RemoteCommand extends Command
         } catch (\Exception $e) {
             $output->writeln(
                 $this->translator->trans('remote.command.error', [
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
                 ])
             );
         }

@@ -15,14 +15,15 @@ Developed and tested with a 2019 Q-series TV.
 ## Installation
 
 1. Clone this repository;
-2. Set up a `.env.local` file in the project root and add the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu on your TV;
+2. Set up an `.env.local` file in the project root and add the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu on your TV;
 3. Create the SSL certificate files:
 `openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt`;
 4. Run `docker-compose build` to build the environment;
 5. Run `docker-compose up -d` to start the environment;
 6. Run `docker-compose exec php-fpm bash` to bash into the PHP container;
 7. Run `composer install`;
-8. Run `yarn install` followed by `yarn encore dev` to build the assets.
+8. Run `bin/phpunit` to install the PHPunit files. This is required for the pre-push Git hook to work properly;
+9. Run `yarn install` followed by `yarn encore dev` to build the assets.
 
 ## Usage
 
@@ -44,7 +45,9 @@ Run the following command with a valid key as the only argument:
 bin/console app:remote home
 ```
 
-### PHPCS
+### PHP-cs-fixer
+
+Copy `.php_cs.dist` over to `.php_cs` and configure.
 
 Bash into the PHP container:
 
@@ -52,19 +55,15 @@ Bash into the PHP container:
 docker-compose exec php-fpm bash
 ```
 
-Then run the following command:
+Then run the following command to fix all issues:
 
 ```bash
-bin/phpcs
-```
-
-Or the following command to automatically fix errors where possible:
- 
-```bash
-bin/phpcbf
+bin/php-cs-fixer fix
 ```
 
 ### PHPUnit
+
+Copy `phpunit.xml.dist` over to `phpunit.xml` and configure.
 
 Bash into the PHP container:
 
@@ -76,6 +75,20 @@ Then run the following command:
 
 ```bash
 bin/phpunit
+```
+
+### Security checker
+
+Bash into the PHP container:
+
+```bash
+docker-compose exec php-fpm bash
+```
+
+Then run the following command:
+
+```bash
+bin/security-checker security:check
 ```
 
 ## Quirks

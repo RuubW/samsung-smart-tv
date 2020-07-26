@@ -12,8 +12,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DefaultController.
- *
- * @package App\Controller
  */
 class DefaultController extends AbstractController
 {
@@ -34,10 +32,6 @@ class DefaultController extends AbstractController
 
     /**
      * DefaultController constructor.
-     *
-     * @param TranslatorInterface $translator
-     * @param RemoteClient $remoteClient
-     * @param array $validKeys
      */
     public function __construct(
         TranslatorInterface $translator,
@@ -51,16 +45,12 @@ class DefaultController extends AbstractController
 
     /**
      * Index action.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function index(Request $request): Response
     {
         // Prepare the form.
         $form = $this->createForm(RemoteType::class, new RemoteForm(), [
-            'choices' => $this->validKeys
+            'choices' => $this->validKeys,
         ]);
 
         // Handle the form request.
@@ -80,7 +70,7 @@ class DefaultController extends AbstractController
                     'success',
                     $this->translator->trans('remote.controller.success', [
                         'count' => count($keys),
-                        'keys' => implode(', ', $keys)
+                        'keys' => implode(', ', $keys),
                     ])
                 );
             } catch (\Exception $e) {
@@ -88,7 +78,7 @@ class DefaultController extends AbstractController
                     'danger',
                     $this->translator->trans('remote.controller.error', [
                         'count' => count($keys),
-                        'keys' => implode(', ', $keys)
+                        'keys' => implode(', ', $keys),
                     ])
                 );
             }
@@ -96,7 +86,7 @@ class DefaultController extends AbstractController
 
         // Render the form.
         return $this->render('remote/index.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }
