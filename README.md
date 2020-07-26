@@ -15,7 +15,7 @@ Developed and tested with a 2019 Q-series TV.
 ## Installation
 
 1. Clone this repository;
-2. Set up a `.env.local` file in the project root and add the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu on your TV;
+2. Set up an `.env.local` file in the project root and add the correct value for `TV_IP`. This value can be found under the `IP Settings` tab of the `Network` menu on your TV;
 3. Create the SSL certificate files:
 `openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt`;
 4. Run `docker-compose build` to build the environment;
@@ -45,7 +45,7 @@ Run the following command with a valid key as the only argument:
 bin/console app:remote home
 ```
 
-### PHPCS
+### PHP-cs-fixer
 
 Copy `.php_cs.dist` over to `.php_cs` and configure.
 
