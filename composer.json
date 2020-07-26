@@ -94,7 +94,7 @@
                 "bin/phpcs --no-cache"
             ],
             "pre-push": [
-                "bin/simple-phpunit"
+                "bin/phpunit"
             ]
         },
         "scripts-dev": {
