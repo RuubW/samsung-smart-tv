@@ -10,7 +10,7 @@ if (false === getenv('SYMFONY_PHPUNIT_DIR')) {
     putenv('SYMFONY_PHPUNIT_DIR='.dirname(__DIR__).'/vendor/bin/.phpunit');
 }
 
-// We use this Composer ENV variable so that repositories in the bridge are mirrored and not symlinked to avoid Docker issues
+// Use this env variable so that repositories in the bridge are mirrored and not symlinked to avoid Docker issues.
 if (false === getenv('COMPOSER_MIRROR_PATH_REPOS')) {
     putenv('COMPOSER_MIRROR_PATH_REPOS=1');
 }
