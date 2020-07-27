@@ -91,7 +91,7 @@
         "hooks": {
             "pre-commit": [
                 "bin/security-checker security:check",
-                "git diff --cached --name-only --diff-filter=ACM -- '*.php' | xargs bin/php-cs-fixer fix"
+                "git diff --cached --name-only --diff-filter=ACM -- '*.php' | xargs -I % sh -c 'bin/php-cs-fixer fix % && git add %'"
             ],
             "pre-push": [
                 "bin/phpunit"

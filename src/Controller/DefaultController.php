@@ -45,8 +45,6 @@ class DefaultController extends AbstractController
 
     /**
      * Index action.
-     *
-     * @param Request $request
      */
     public function index(Request $request): Response
     {
