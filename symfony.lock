@@ -170,9 +170,6 @@
             "bin/console"
         ]
     },
-    "symfony/contracts": {
-        "version": "v2.1.2"
-    },
     "symfony/css-selector": {
         "version": "v5.1.2"
     },

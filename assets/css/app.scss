@@ -1,5 +1,13 @@
-body {
-    background-color: lightgray;
-}
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
 
+// Variables
+@import 'variables';
+
+// Bootstrap
 @import "~bootstrap/scss/bootstrap";
+
+// Custom
+.form-group:last-of-type {
+    margin-bottom: 0 !important;
+}
